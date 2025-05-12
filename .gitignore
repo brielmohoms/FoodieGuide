@@ -403,3 +403,8 @@ FodyWeavers.xsd
 umbraco/Data/TEMP/
 umbraco/Logs/
 umbraco.db
+
+
+*.db
+*.db-shm
+*.db-wal
