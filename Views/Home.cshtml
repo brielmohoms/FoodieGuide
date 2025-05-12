@@ -3,3 +3,53 @@
 @{
 	Layout = null;
 }
+
+<!-- Intro Section -->
+<section class="intro">
+    <h1>@Model.Value("introText")</h1>
+</section>
+
+<!-- Category Section -->
+<section class="categories">
+    <h2>@Model.Value("categoryIntroText")</h2>
+</section>
+
+<!-- Featured Restaurants -->
+<section class="featured-restaurants">
+    <h2>Featured Restaurants</h2>
+    @if (Model.HasValue("featuredRestaurants"))
+    {
+        var restaurants = Model.Value<IEnumerable<IPublishedContent>>("featuredRestaurants");
+        foreach (var item in restaurants)
+        {
+            var image = item.Value<IPublishedContent>("image");
+            <div class="restaurant-card" style="border:1px solid #ccc; padding:1em; margin:1em 0;">
+                <h3>@item.Value("restaurantName")</h3>
+                @if (image != null)
+                {
+                    <img src="@image.Url()" alt="@item.Value("restaurantName")" width="250" />
+                }
+                <p>@item.Value("description")</p>
+                <p><strong>Category:</strong> @string.Join(", ", item.Value<IEnumerable<string>>("category"))</p>
+            </div>
+        }
+    }
+</section>
+
+<!-- Occasion Section -->
+<section class="occasions">
+    <h2>Eat Out by Occasion</h2>
+    <p>@Model.Value("occasionIntroText")</p>
+</section>
+
+<!-- Weekly Favorite -->
+<section class="weekly-favorite">
+    <h2>Favorite Restaurant of the Week</h2>
+    <p>@Model.Value("weeklyFavoriteText")</p>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+    <h2>Stay Updated</h2>
+    <p>@Model.Value("newsletterText")</p>
+</section>
