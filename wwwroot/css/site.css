@@ -1,0 +1,98 @@
+/* === Base Pill Style === */
+.category-item a {
+  --size: 90px;                       /* pill width */
+  --radius: calc(var(--size) / 2);
+  width: var(--size);
+  height: calc(var(--size) * 4.8);
+  background: var(--bg) center/cover no-repeat;
+  border-radius: var(--radius);
+  position: relative;
+  text-decoration: none;
+  overflow: hidden;
+  transition: 
+    width 0.4s ease, 
+    height 0.4s ease, 
+    border-radius 0.4s ease;
+}
+
+/* vertical label & icon inside the pill */
+.category-item .category-label {
+  position: absolute;
+  bottom: calc(1rem + 40px + 0.5rem);  /* icon height (40px) + gap (0.5rem) + bottom offset (1rem) */
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  transition: 
+    writing-mode 0s 0.4I askeds,    /* delay mode switch until after resize */
+    transform 0.4s ease,
+    bottom 0.4s ease,
+    font-size 0.4s ease;
+}
+
+.category-item .category-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 
+    width 0.4s ease,
+    height 0.4s ease,
+    bottom 0.4s ease,
+    right 0.4s ease;
+}
+
+.category-item .category-icon {
+  position: absolute;
+  bottom: 1rem;                     /* 1rem up from bottom edge */
+  left: 50%;                        
+  transform: translateX(-50%);      /* center horizontally */
+  margin-top: 0;                    /* remove previous top margin */
+}
+
+/* darken overlay on hover */
+.category-item a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+/* === Hover State: Pill → Card === */
+.category-item a:hover {
+  --size: 90px;
+  height: calc(var(--size) * 4.8);
+  width: 350px;               /* expand to card width */             
+  border-radius: 12px;        /* softer corners */
+}
+
+/* darken background a bit for contrast */
+.category-item a:hover::before {
+  background: rgba(0,0,0,0.6);
+}
+
+/* switch label from vertical to horizontal, bottom-left */
+.category-item a:hover .category-label {
+  writing-mode: horizontal-tb; /* normal text flow */
+  transform: none;             /* no rotation */
+  bottom: 20px;                
+  left: 55px;                  
+  font-size: 1.5rem;           /* bigger for readability */
+}
+
+/* move the icon to the bottom-right corner */
+.category-item a:hover .category-icon {
+  position: absolute;
+  left: 30px;
+  bottom: 16px;
+  width: 40px;
+  height: 40px;
+}

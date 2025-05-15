@@ -18,6 +18,9 @@
     var first = true;
 
     var introImage = Model.Value<IPublishedContent>("introImage");
+
+    var cats = Model.Value<IEnumerable<IPublishedContent>>("browseCategories")
+               ?? Enumerable.Empty<IPublishedContent>();
 }
 
 @if (slides.Any())
@@ -92,3 +95,23 @@ else
     </div>
   </div>
 </section>
+
+<section id="categories" class="container py-5">
+    <h2 class="text-center mb-4">What are you in the mood for?</h2>
+
+    <ul class="list-unstyled d-flex flex-wrap justify-content-center category-list">
+      @foreach (var c in cats)
+      {
+        var img = c.Value<IPublishedContent>("image")?.Url();
+        <li class="category-item mx-2">
+          <a href="@c.Url()" style="--bg:url('@img')" class="d-flex flex-column justify-content-between align-items-center">
+            <div class="category-icon">
+              @* You can swap these spans for <img> or SVG icons *@
+              <span class="fi fi-@c.Name.ToLower()"></span>
+            </div>
+            <div class="category-label">@c.Name</div>
+          </a>
+        </li>
+      }
+    </ul>
+  </section>
