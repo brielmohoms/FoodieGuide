@@ -10,6 +10,9 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseUmbraco()
     .WithMiddleware(u =>

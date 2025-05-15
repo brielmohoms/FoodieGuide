@@ -1,55 +1,73 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using System
+@using System.Collections.Generic
+@using System.Linq
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+
 @{
-	Layout = "master.cshtml";
+    // 1) Point to your master layout
+    Layout = "master.cshtml";
+
+    // 2) Pull the restaurants you picked in the back-office
+    var slides = Model.Value<IEnumerable<IPublishedContent>>("sliderRestaurants")
+                 ?? Enumerable.Empty<IPublishedContent>();
+    var first = true;
 }
 
-<!-- Intro Section -->
-<section class="intro">
-    <h1>@Model.Value("introText")</h1>
-</section>
+@if (slides.Any())
+{
+  <!-- 3) Bootstrap carousel markup -->
+  <div id="restaurantCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      @foreach (var r in slides)
+      {
+          // Capture the data for this slide
+          var img = r.Value<IPublishedContent>("image")?.Url();
+          var name = r.Value<string>("restaurantName");
+          var desc = r.Value<string>("description") ?? "";
+            
+          var snippet = desc.Length > 80 
+            ? desc.Substring(0, 80) + "…" 
+            : desc;
+        
+        <div class="carousel-item @(first ? "active" : "")">
+          <img src="@img" class="d-block w-100" alt="@name" />
+          <div class="carousel-caption d-none d-md-block">
+            <h5>@name</h5>
+            <p>@snippet</p>
+          </div>
+        </div>
+        first = false;
+      }
+    </div>
 
-<!-- Category Section -->
-<section class="categories">
-    <h2>@Model.Value("categoryIntroText")</h2>
-</section>
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
 
-<!-- Featured Restaurants -->
-<section class="featured-restaurants">
-    <h2>Featured Restaurants</h2>
-    @if (Model.HasValue("featuredRestaurants"))
-    {
-        var restaurants = Model.Value<IEnumerable<IPublishedContent>>("featuredRestaurants");
-        foreach (var item in restaurants)
-        {
-            var image = item.Value<IPublishedContent>("image");
-            <div class="restaurant-card" style="border:1px solid #ccc; padding:1em; margin:1em 0;">
-                <h3>@item.Value("restaurantName")</h3>
-                @if (image != null)
-                {
-                    <img src="@image.Url()" alt="@item.Value("restaurantName")" width="250" />
-                }
-                <p>@item.Value("description")</p>
-                <p><strong>Category:</strong> @string.Join(", ", item.Value<IEnumerable<string>>("category"))</p>
-            </div>
-        }
-    }
-</section>
-
-<!-- Occasion Section -->
-<section class="occasions">
-    <h2>Eat Out by Occasion</h2>
-    <p>@Model.Value("occasionIntroText")</p>
-</section>
-
-<!-- Weekly Favorite -->
-<section class="weekly-favorite">
-    <h2>Favorite Restaurant of the Week</h2>
-    <p>@Model.Value("weeklyFavoriteText")</p>
-</section>
-
-<!-- Newsletter -->
-<section class="newsletter">
-    <h2>Stay Updated</h2>
-    <p>@Model.Value("newsletterText")</p>
-</section>
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      @for (int i = 0; i < slides.Count(); i++)
+      {
+        <button type="button"
+                data-bs-target="#restaurantCarousel"
+                data-bs-slide-to="@i"
+                class="@(i == 0 ? "active" : "")"
+                aria-current="@(i == 0 ? "true" : "false")"
+                aria-label="Slide @(i + 1)">
+        </button>
+      }
+    </div>
+  </div>
+}
+else
+{
+  <p class="text-center text-muted">No restaurants selected for the slider.</p>
+}

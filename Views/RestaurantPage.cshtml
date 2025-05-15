@@ -4,52 +4,27 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
 @{
-    Layout = "master.cshtml";
-
-    // Strongly typed values
-    var name = Model.Value<string>("restaurantName");
-    var description = Model.Value<string>("description");
-	var image = Model.Value<MediaWithCrops>("image");
-    var categories = Model.Value<IEnumerable<string>>("category");
-    var ranking = Model.Value<int?>("ranking");
-    var occasion = Model.Value<IEnumerable<string>>("occasionType");
-    var seasonalTags = Model.Value<IEnumerable<string>>("seasonalTags");
+    Layout = null;
+    var name        = Model.Value<string>("restaurantName");
+    var desc        = Model.Value<IHtmlContent>("description");
+    var img         = Model.Value<IPublishedContent>("image");
+    var rating      = Model.Value<int>("rating");
+    var categories  = Model.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>();
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>@name</title>
-</head>
-<body>
-    <h1>@name</h1>
 
-    @if (image != null)
-	{
-		<div>
-		<img src="@image.Url()" alt="@name" width="300" />
-		</div>
-	}
-
-    <p><strong>Description:</strong> @description</p>
-
-    @if (ranking != null)
-    {
-        <p><strong>Ranking:</strong> @ranking</p>
-    }
-
-    @if (categories != null && categories.Any())
-    {
-        <p><strong>Categories:</strong> @string.Join(", ", categories)</p>
-    }
-
-    @if (occasion != null && occasion.Any())
-    {
-        <p><strong>Occasion Type:</strong> @string.Join(", ", occasion)</p>
-    }
-
-    @if (seasonalTags != null && seasonalTags.Any())
-    {
-        <p><strong>Seasonal Tags:</strong> @string.Join(", ", seasonalTags)</p>
-    }
-</body>
-</html>
+<article class="restaurant-detail">
+  <h1>@name</h1>
+  @if(img != null){
+    <img src="@img.Url()" alt="@name" class="detail-image" />
+  }
+  <div class="meta">
+    <span>Rating:
+      @for(int i=0; i<rating; i++){ <span>&#9733;</span> }
+      @for(int i=rating; i<5; i++){ <span>&#9734;</span> }
+    </span>
+    <span>Category: @string.Join(", ", categories.Select(x => x.Name))</span>
+  </div>
+  <div class="description">
+    @desc
+  </div>
+</article>
