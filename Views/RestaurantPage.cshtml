@@ -4,7 +4,7 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
 @{
-    Layout = null;
+    Layout = "master.cshtml";
     var name        = Model.Value<string>("restaurantName");
     var desc        = Model.Value<IHtmlContent>("description");
     var img         = Model.Value<IPublishedContent>("image");

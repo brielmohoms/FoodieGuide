@@ -1,55 +1,31 @@
-﻿@*
-  This is your master layout. All pages will be injected
-  where @RenderBody() appears. We include Bootstrap + inline styles.
-*@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>FoodieGuide</title>
 
-  <!-- 1) Bootstrap CSS from CDN -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet" />
 
-  <!-- 2) Inline demo styles (you can later move these to site.css) -->
+  <!-- Inline styles for carousel -->
   <style>
-    /* Global resets & typography */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
-
-    /* Centered main container */
-    main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-
-    /* Carousel image cropping */
-    .carousel-item img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-    }
-
-    /* Caption background */
-    .carousel-caption {
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 0.25rem;
-    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family: Arial, sans-serif; }
+    main { max-width:1200px; margin:2rem auto; padding:0 1rem; }
+    .carousel-item img { width:100%; height:400px; object-fit:cover; }
+    .carousel-caption { background: rgba(0,0,0,0.5); border-radius:0.25rem; }
   </style>
 </head>
 <body>
-
-  <!-- Placeholder nav -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
     <div class="container">
       <a class="navbar-brand" href="/">FoodieGuide</a>
-      <div>
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/restaurants">Restaurants</a></li>
-          <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
-        </ul>
-      </div>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/restaurants">Restaurants</a></li>
+        <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
+      </ul>
     </div>
   </nav>
 
@@ -57,10 +33,8 @@
     @RenderBody()
   </main>
 
-  <!-- Bootstrap JS Bundle (includes popper) -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-  ></script>
-  @RenderSection("Scripts", required: false)
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  @RenderSection("Scripts", required:false)
 </body>
 </html>
