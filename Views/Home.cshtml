@@ -25,6 +25,9 @@
     var weeklyFavorites = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
                         ?? Enumerable.Empty<IPublishedContent>();
 
+    var occasionCategories = Model.Value<IEnumerable<IPublishedContent>>("occasionCategory") 
+                        ?? Enumerable.Empty<IPublishedContent>();
+
     var home = Model;
 
     var headline   = home.Value<string>("subscribeHeadline") ?? "Stay Updated!";
@@ -146,7 +149,7 @@ else
                          ? string.Join(", ", categoryArr)
                          : "Uncategorized";
 
-      // Rating as int (1–5)
+      // Rating as int (1-5)
       var ratingValue  = restaurant.Value<int?>("rating") ?? 0;
 
       <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
@@ -180,6 +183,33 @@ else
         </div>
       </div>
     }
+  </section>
+
+  <section id="occasion-Category">
+    <h2 class="text-center mb-4">Celebrating Something Special?</h2>
+    <h5 class="text-center mb-4">Take a look at our specials</h5>
+
+    @foreach(var category in occasionCategories) 
+    {
+      var occasionImage        = category.Value<IPublishedContent>("occasionImage")?.Url();
+      var occasionName         = category.Value<string>("occasionName") ?? category.Name;
+
+      <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
+        <!-- LEFT: image -->
+        <div class="card-img-left flex-shrink-0">
+          <img src="@occasionImage"
+               alt="@occasionName"
+               class="h-100 w-100 object-fit-cover" />
+        </div>
+
+        <!-- RIGHT: content -->
+        <div class="card-body flex-grow-1 p-4">
+          <h3 class="h4 mb-2">@occasionName</h3>
+        </div>
+
+      </div>
+    }
+
   </section>
 
   <section id="stay-updated" class="stay-updated position-relative text-white py-5" style="background-image:url('@bgImage');">
