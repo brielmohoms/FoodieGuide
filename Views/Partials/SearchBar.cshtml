@@ -1,6 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Http.Extensions
 
-<form method="get" action="/search">
-    <input type="text" name="q" placeholder="Search restaurants..." value="@Context.Request.Query["q"]" />
-    <button type="submit">Search</button>
+<form class="d-flex" method="get" action="/search">
+  <input 
+    class="form-control me-2" 
+    type="search" 
+    name="q" 
+    placeholder="Search restaurants..." 
+    style="border: 1px solid #3b5998;"
+  />
+  <button 
+    class="btn" 
+    type="submit" 
+    style="background-color: #3b5998; color: white;"
+  >
+    Search
+  </button>
 </form>
