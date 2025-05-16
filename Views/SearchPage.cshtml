@@ -1,0 +1,31 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject Umbraco.Cms.Core.Web.IUmbracoContextAccessor UmbracoContextAccessor
+@{
+	Layout = "master.cshtml";
+    var query = Context.Request.Query["q"].ToString();
+    var results = Enumerable.Empty<IPublishedContent>();
+
+    if (!string.IsNullOrWhiteSpace(query))
+    {
+        results = Umbraco.ContentAtRoot()
+            .DescendantsOrSelfOfType("restaurant") // Your document type alias
+            .Where(x => x.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+<h1>Search Results for "@query"</h1>
+
+@if (results.Any())
+{
+    <ul>
+        @foreach (var item in results)
+        {
+            <li><a href="@item.Url()">@item.Name</a></li>
+        }
+    </ul>
+}
+else if (!string.IsNullOrEmpty(query))
+{
+    <p>No results found for "@query".</p>
+}
