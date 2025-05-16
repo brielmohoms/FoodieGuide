@@ -22,7 +22,7 @@
     var cats = Model.Value<IEnumerable<IPublishedContent>>("browseCategories")
                ?? Enumerable.Empty<IPublishedContent>();
 
-    var featuredItems = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
+    var weeklyFavorites = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
                         ?? Enumerable.Empty<IPublishedContent>();
       
 }
@@ -120,48 +120,51 @@ else
     </ul>
 </section>
 
-<section id="featured" class="container py-5">
+<section id="featured" class="container my-5">
     <h2 class="text-center mb-4">Restaurant of the Week</h2>
 
-    @foreach (var item in featuredItems)
+    @foreach (var restaurant in weeklyFavorites)
     {
-      var imgUrl = item.Value<IPublishedContent>("image")?.Url();
-      var name   = item.Value<string>("restaurantName") ?? item.Name;
-      var desc   = item.Value<string>("description") ?? "";
-      var category   = item.Value<IEnumerable<IPublishedContent>>("category") 
-                   ?? Enumerable.Empty<IPublishedContent>();
-      var rating = item.Value<int?>("rating") ?? 0;
+      // Core fields
+      var imageUrl     = restaurant.Value<IPublishedContent>("image")?.Url();
+      var name         = restaurant.Value<string>("restaurantName") ?? restaurant.Name;
+      var description  = restaurant.Value<string>("description") ?? "";
+
+      // Category as string[]
+      var categoryArr  = restaurant.Value<string[]>("category") ?? Array.Empty<string>();
+      var categoryText = categoryArr.Length > 0
+                         ? string.Join(", ", categoryArr)
+                         : "Uncategorized";
+
+      // Rating as int (1–5)
+      var ratingValue  = restaurant.Value<int?>("rating") ?? 0;
 
       <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
-        <!-- IMAGE LEFT -->
+        <!-- LEFT: image -->
         <div class="card-img-left flex-shrink-0">
-          <img src="@imgUrl" alt="@name" class="h-100 object-fit-cover" />
+          <img src="@imageUrl"
+               alt="@name"
+               class="h-100 w-100 object-fit-cover" />
         </div>
 
-        <!-- CONTENT RIGHT -->
+        <!-- RIGHT: content -->
         <div class="card-body flex-grow-1 p-4">
-          <h3 class="h5 mb-2">@name</h3>
-          <p class="text-muted mb-3">@desc</p>
+          <h3 class="h4 mb-2">@name</h3>
+          <p class="text-muted mb-2">@description</p>
 
-          @if (category.Any())
-          {
-            <div class="mb-2">
-              <strong>Category:</strong>
-              @string.Join(", ", category.Select(c => c.Name))
-            </div>
-          }
-          
+          <!-- Category -->
+          <div class="mb-2">
+            <strong>Category:</strong> @categoryText
+          </div>
+
+          <!-- Rating Stars -->
           <div class="rating">
-            @for (int i = 1; i <= 5; i++)
+            @for (int star = 1; star <= 5; star++)
             {
-              if (i <= rating)
-              {
-                <i class="bi bi-star-fill text-warning"></i>
-              }
-              else
-              {
-                <i class="bi bi-star text-warning"></i>
-              }
+              var starCss = star <= ratingValue
+                            ? "bi-star-fill"
+                            : "bi-star";
+              <i class="bi @starCss text-warning"></i>
             }
           </div>
         </div>
@@ -169,4 +172,40 @@ else
     }
   </section>
 
+  <section id="stay-updated" class="bg-light py-5">
+  <div class="container text-center">
+    <h3 class="mb-3">Stay updated on new openings</h3>
 
+    <!-- The signup form -->
+    <form asp-controller="Home"
+          asp-action="Subscribe"
+          method="post"
+          class="row justify-content-center g-2">
+
+      <!-- Email input -->
+      <div class="col-md-6">
+        <input type="email"
+               name="email"
+               class="form-control form-control-lg"
+               placeholder="Enter your email"
+               required />
+      </div>
+
+      <!-- Submit button -->
+      <div class="col-md-2">
+        <button type="submit"
+                class="btn btn-primary btn-lg w-100">
+          Subscribe
+        </button>
+      </div>
+    </form>
+
+    <!-- Success message -->
+    @if (TempData["SubscribeMessage"] != null)
+    {
+      <div class="alert alert-success mt-3">
+        @TempData["SubscribeMessage"]
+      </div>
+    }
+  </div>
+</section>
