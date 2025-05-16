@@ -24,6 +24,16 @@
 
     var weeklyFavorites = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
                         ?? Enumerable.Empty<IPublishedContent>();
+
+    var home = Model;
+
+    var headline   = home.Value<string>("subscribeHeadline") ?? "Stay Updated!";
+    var subheading = home.Value<string>("subscribeSubheading") ?? "Get exclusive updates on new restaurants and opening day invites — straight to your inbox.";
+    var iconClass  = home.Value<string>("subscribeIconClass") ?? "bi-envelope-at";
+
+    // Get the image URL from your Media Picker
+    var bgImage = home.Value<IPublishedContent>("subscribeImage")?.Url();
+
       
 }
 
@@ -172,40 +182,26 @@ else
     }
   </section>
 
-  <section id="stay-updated" class="bg-light py-5">
-  <div class="container text-center">
-    <h3 class="mb-3">Stay updated on new openings</h3>
+  <section id="stay-updated" class="stay-updated position-relative text-white py-5" style="background-image:url('@bgImage');">
+  <!-- semi-transparent dark overlay -->
+  <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
-    <!-- The signup form -->
-    <form asp-controller="Home"
-          asp-action="Subscribe"
-          method="post"
-          class="row justify-content-center g-2">
+  <div class="container position-relative">
+    <div class="row justify-content-left">
+      <div class="col-md-5 text-center">
+        <i class="bi @iconClass stay-icon mb-3"></i>
+        <h3 class="display-5 fw-bold">@headline</h3>
+        <p class="lead mb-4">@subheading</p>
 
-      <!-- Email input -->
-      <div class="col-md-6">
-        <input type="email"
-               name="email"
-               class="form-control form-control-lg"
-               placeholder="Enter your email"
-               required />
+        <form asp-controller="Home" asp-action="Subscribe" method="post" class="d-flex justify-content-center align-items-center gap-2 mx-auto" style="max-width: 600px;">
+          <div class="col-sm-10">
+            <input type="email" name="email" class="form-control form-control-lg" placeholder="Enter your Email Address..." required />
+          </div>
+          <div class="col-sm-3">
+            <button type="submit" class="btn btn-primary btn-lg w-100">Subscribe</button>
+          </div>
+        </form>
       </div>
-
-      <!-- Submit button -->
-      <div class="col-md-2">
-        <button type="submit"
-                class="btn btn-primary btn-lg w-100">
-          Subscribe
-        </button>
-      </div>
-    </form>
-
-    <!-- Success message -->
-    @if (TempData["SubscribeMessage"] != null)
-    {
-      <div class="alert alert-success mt-3">
-        @TempData["SubscribeMessage"]
-      </div>
-    }
+    </div>
   </div>
 </section>

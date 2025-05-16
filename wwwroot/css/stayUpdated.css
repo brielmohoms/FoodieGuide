@@ -1,0 +1,44 @@
+/* ensure the section covers enough area and the bg covers it */
+.stay-updated {
+  background-size: cover;
+  background-position: center;
+}
+
+/* make the section ignore any container width and stretch the viewport */
+#stay-updated.stay-updated {
+  position: relative;
+  width: 100vw;          /* full browser width */
+  left: 50%;             /* nudge it back to center */
+  margin-left: -50vw;    /* pull left by half viewport */
+  margin-right: -50vw;   /* pull right by half viewport */
+  
+  background-size: cover;
+  background-position: center;
+}
+
+/* dark overlay to improve text contrast */
+.stay-updated .overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* put content above the overlay */
+.stay-updated .container {
+  z-index: 2;
+}
+
+/* icon styling */
+.stay-icon {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
+/* form inputs / button stay white on dark bg */
+.stay-updated .form-control {
+  background-color: rgba(255,255,255,0.9);
+  border: none;
+}
+.stay-updated .btn-primary {
+  background-color: #3b5998;
+  border: none;
+}
