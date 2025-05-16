@@ -21,6 +21,10 @@
 
     var cats = Model.Value<IEnumerable<IPublishedContent>>("browseCategories")
                ?? Enumerable.Empty<IPublishedContent>();
+
+    var featuredItems = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
+                        ?? Enumerable.Empty<IPublishedContent>();
+      
 }
 
 @if (slides.Any())
@@ -114,4 +118,55 @@ else
         </li>
       }
     </ul>
+</section>
+
+<section id="featured" class="container py-5">
+    <h2 class="text-center mb-4">Restaurant of the Week</h2>
+
+    @foreach (var item in featuredItems)
+    {
+      var imgUrl = item.Value<IPublishedContent>("image")?.Url();
+      var name   = item.Value<string>("restaurantName") ?? item.Name;
+      var desc   = item.Value<string>("description") ?? "";
+      var category   = item.Value<IEnumerable<IPublishedContent>>("category") 
+                   ?? Enumerable.Empty<IPublishedContent>();
+      var rating = item.Value<int?>("rating") ?? 0;
+
+      <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
+        <!-- IMAGE LEFT -->
+        <div class="card-img-left flex-shrink-0">
+          <img src="@imgUrl" alt="@name" class="h-100 object-fit-cover" />
+        </div>
+
+        <!-- CONTENT RIGHT -->
+        <div class="card-body flex-grow-1 p-4">
+          <h3 class="h5 mb-2">@name</h3>
+          <p class="text-muted mb-3">@desc</p>
+
+          @if (category.Any())
+          {
+            <div class="mb-2">
+              <strong>Category:</strong>
+              @string.Join(", ", category.Select(c => c.Name))
+            </div>
+          }
+          
+          <div class="rating">
+            @for (int i = 1; i <= 5; i++)
+            {
+              if (i <= rating)
+              {
+                <i class="bi bi-star-fill text-warning"></i>
+              }
+              else
+              {
+                <i class="bi bi-star text-warning"></i>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    }
   </section>
+
+
