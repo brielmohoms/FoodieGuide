@@ -25,7 +25,7 @@
     var weeklyFavorites = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
                         ?? Enumerable.Empty<IPublishedContent>();
 
-    var occasionCategories = Model.Value<IEnumerable<IPublishedContent>>("occasionCategory") 
+    var occasionItems = Model.Value<IEnumerable<IPublishedContent>>("occasionCategory") 
                         ?? Enumerable.Empty<IPublishedContent>();
 
     var home = Model;
@@ -185,34 +185,56 @@ else
     }
   </section>
 
-  <section id="occasion-Category">
+ <section id="occasion" class="celebrate-section py-5">
+  <div class="container">
     <h2 class="text-center mb-4">Celebrating Something Special?</h2>
-    <h5 class="text-center mb-4">Take a look at our specials</h5>
 
-    @foreach(var category in occasionCategories) 
-    {
-      var occasionImage        = category.Value<IPublishedContent>("occasionImage")?.Url();
-      var occasionName         = category.Value<string>("occasionName") ?? category.Name;
+    <div class="row justify-content-center gx-4 gy-4">
+      @foreach(var item in occasionItems)
+      {
+        var occasionImage        = item.Value<IPublishedContent>("occasionImage")?.Url();
+        var occasionName         = item.Value<string>("occasionName") ?? item.Name;
+        var occasionEvents       = item.Value<string[]>("occasionEvents")  ?? Array.Empty<string>();
 
-      <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
-        <!-- LEFT: image -->
-        <div class="card-img-left flex-shrink-0">
-          <img src="@occasionImage"
-               alt="@occasionName"
-               class="h-100 w-100 object-fit-cover" />
+        <div class="col-12 col-md-4">
+          <div class="card h-100 shadow-sm">
+            <img 
+              src="@occasionImage" 
+              class="card-img-top"
+              style="height:200px; object-fit:cover;"
+              alt="@occasionName" />
+
+            <div class="card-body">      
+              <h3 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold"; 
+              text-align:center;">@occasionName</h3>
+
+              @if (occasionEvents.Any())
+              {
+                <ul class="list-unstyled mt-2 mb-0 text-start text-nowrap">
+                  @foreach(var ev in occasionEvents)
+                  {
+                    var parts = ev.Split(new[] { '–' }, 2);
+                    var title = parts[0].Trim();
+                    var description = parts.Length > 1 ? parts[1].Trim() : "";
+                    <li>
+                      <strong>@title</strong>
+                      <br>
+                      @if(!string.IsNullOrWhiteSpace(description)) { @($" {description}") }
+                      <br>
+                      <br>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
         </div>
+      }
+    </div>
+  </div>
+</section>
 
-        <!-- RIGHT: content -->
-        <div class="card-body flex-grow-1 p-4">
-          <h3 class="h4 mb-2">@occasionName</h3>
-        </div>
-
-      </div>
-    }
-
-  </section>
-
-  <section id="stay-updated" class="stay-updated position-relative text-white py-5" style="background-image:url('@bgImage');">
+<section id="stay-updated" class="stay-updated position-relative text-white py-5" style="background-image:url('@bgImage');">
   <!-- semi-transparent dark overlay -->
   <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
