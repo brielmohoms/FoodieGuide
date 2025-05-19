@@ -119,9 +119,10 @@ else
     <ul class="list-unstyled d-flex flex-wrap justify-content-center category-list">
       @foreach (var c in cats)
       {
-        var img = c.Value<IPublishedContent>("image")?.Url();
+        var img = c.Value<IPublishedContent>("categoryImage")?.Url();
         <li class="category-item mx-2">
-          <a href="@c.Url()" style="--bg:url('@img')" class="d-flex flex-column justify-content-between align-items-center">
+          <a href="@c.Url()" style="--bg:url('@img')" 
+          class="d-flex flex-column justify-content-between align-items-center">
             <div class="category-icon">
               @* You can swap these spans for <img> or SVG icons *@
               <span class="fi fi-@c.Name.ToLower()"></span>
