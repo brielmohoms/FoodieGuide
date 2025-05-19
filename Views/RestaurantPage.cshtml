@@ -1,4 +1,100 @@
 ﻿@{
 	Layout = "master.cshtml";
 }
-null
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+
+@{
+    // 1) Point to your master layout
+    Layout = "master.cshtml";
+
+    var page = Model;
+    
+    var categoryName = page.Value<string>("categoryName") ?? page.Name;
+
+    var allRestaurants = Umbraco
+        .ContentAtRoot().First()
+        .DescendantsOfType("restaurantPage")
+        .Where(r => r.IsPublished());
+                
+    var categories = allRestaurants
+        .SelectMany(r => r.Value<string[]>("category") ?? Array.Empty<string>())
+        .Distinct();
+
+    Func<IEnumerable<IPublishedContent>, IEnumerable<IEnumerable<IPublishedContent>>> chunk = (items) =>
+        items
+        .Select((item,i) => new { item, i })
+        .GroupBy(x => x.i / 3)
+        .Select(g => g.Select(x => x.item));
+
+}
+
+<section class="py-5">
+  <div class="container">
+    <h1 class="mb-4 text-center">@categoryName</h1>
+
+    @if (!categories.Any())
+    {
+        <p class="text-center text-muted">No restaurants found in this category.</p>
+    }
+    else
+    {
+        <div class="row gx-4 gy-4">
+          @foreach(var cat in categories)
+{
+    var restaurantsInCat = allRestaurants
+        .Where(r => (r.Value<string[]>("category") ?? Array.Empty<string>()).Contains(cat))
+        .ToList();
+
+    if (!restaurantsInCat.Any()) continue;
+
+    var carouselId = "carousel-" + cat.Replace(" ", "-").ToLower();
+
+    <h2 class="mt-5">@cat</h2>
+    <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        @{
+            var slides = chunk(restaurantsInCat);
+            bool first = true;
+            foreach(var slideGroup in slides)
+            {
+                <div class="carousel-item @(first ? "active" : "")">
+                  <div class="row">
+                    @foreach(var r in slideGroup)
+                    {
+                      var img = r.Value<IPublishedContent>("image")?.Url() ?? "/media/placeholder.jpg";
+                      var name = r.Value<string>("restaurantName") ?? r.Name;
+                      <div class="col-md-4">
+                        <div class="card mb-3">
+                          <img src="@img" class="card-img-top" style="height:150px; object-fit:cover" />
+                          <div class="card-body text-center">
+                            <h5 class="card-title">@name</h5>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+                first = false;
+            }
+        }
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+}
+
+        </div>
+    }
+  </div>
+</section>
+}

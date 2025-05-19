@@ -1,0 +1,38 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>
+@{
+
+  Layout = "master.cshtml";                // your layout
+  var page = Model;                        // the “Restaurants” node
+  
+  // grab only the child pages under “Restaurants”
+  var allRestaurants = page.ChildrenOfType("restaurantListings");
+}
+
+<section class="py-5">
+  <div class="container">
+    @if(!allRestaurants.Any()){
+      <p class="text-center text-muted">No restaurants found in this category.</p>
+    } else {
+      <div class="row gx-4 gy-4">
+        @foreach(var r in allRestaurants){
+          var image = r.Value<IPublishedContent>("categoryImage")?.Url();
+          var name  = r.Value<string>("restaurantName") ?? r.Name;
+          var desc  = r.Value<string>("description")    ?? "";
+        <div class="col-12 col-md-4">
+          <div class="card h-100 shadow-sm">
+            <img src="@image" 
+                 class="card-img-top" 
+                 style="object-fit:cover; height:200px;"
+                 alt="@name" />
+            <div class="card-body">
+              <h5 class="card-title">@name</h5>
+              <p class="card-text">@desc</p>
+              <a href="@r.Url()" class="btn btn-sm btn-primary">View details →</a>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    }
+  </div>
+</section>
