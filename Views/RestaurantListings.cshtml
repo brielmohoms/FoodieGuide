@@ -1,38 +1,46 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>
-@{
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
 
-  Layout = "master.cshtml";                // your layout
-  var page = Model;                        // the “Restaurants” node
-  
-  // grab only the child pages under “Restaurants”
-  var allRestaurants = page.ChildrenOfType("restaurantListings");
+@{
+    Layout = "master.cshtml";
+    var current = Model;  
+
+    // only the direct children of "All Restaurants"
+    var categories = current
+      .Children
+      .Where(x => x.ContentType.Alias == "categoryPage")  // or your alias
+      .ToArray();
 }
 
 <section class="py-5">
   <div class="container">
-    @if(!allRestaurants.Any()){
-      <p class="text-center text-muted">No restaurants found in this category.</p>
-    } else {
-      <div class="row gx-4 gy-4">
-        @foreach(var r in allRestaurants){
-          var image = r.Value<IPublishedContent>("categoryImage")?.Url();
-          var name  = r.Value<string>("restaurantName") ?? r.Name;
-          var desc  = r.Value<string>("description")    ?? "";
-        <div class="col-12 col-md-4">
-          <div class="card h-100 shadow-sm">
-            <img src="@image" 
-                 class="card-img-top" 
-                 style="object-fit:cover; height:200px;"
-                 alt="@name" />
-            <div class="card-body">
-              <h5 class="card-title">@name</h5>
-              <p class="card-text">@desc</p>
-              <a href="@r.Url()" class="btn btn-sm btn-primary">View details →</a>
+    <h1 class="mb-4 text-center">Browse by Category</h1>
+    <div class="row gx-4">
+      @foreach (var cat in categories)
+      {
+          var name  = cat.Value<string>("categoryName") ?? cat.Name;
+          var desc  = cat.Value<string>("description") ?? "";
+          var img   = cat.Value<IPublishedContent>("categoryImage")?.Url();
+
+          <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 text-center shadow-sm">
+              @if(!string.IsNullOrEmpty(img))
+              {
+                <img src="@img"
+                     class="card-img-top"
+                     style="height:150px; object-fit:cover"
+                     alt="@name" />
+              }
+              <div class="card-body">
+                <h5 class="card-title">@name</h5>
+                <p class="card-text text-muted">@desc</p>
+                <a href="@cat.Url()"
+                   class="btn btn-sm btn-primary">View →</a>
+              </div>
             </div>
           </div>
-        </div>
-        }
-      </div>
-    }
+      }
+    </div>
   </div>
 </section>
