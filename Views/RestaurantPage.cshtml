@@ -10,32 +10,121 @@
     var imageUrl    = Model.Value<IPublishedContent>("image")?.Url() ?? "";
     var rating      = Model.Value<int?>("rating")               ?? 0;
     var categories  = Model.Value<string[]>("category")         ?? Array.Empty<string>();
+
+    var address        = Model.Value<string>("address");
+    var openingHours   = Model.Value<string>("openingHours");
+    var phone          = Model.Value<string>("phone");
+    var websiteUrl     = Model.Value<string>("websiteUrl");
+
+    var reviews        = Model.Value<IEnumerable<IPublishedContent>>("reviews") ?? 
+      Enumerable.Empty<IPublishedContent>();
 }
 
-<section class="restaurant-detail py-5">
+<section class="restaurant-hero" style="background-image:url('@imageUrl');>
+    <div class="hero-overlay"></div>
+    <div class="hero-content text-white text-center">
+      <h1>@title</h1>
+  </div>
+</section>
+
+<section class="stats-bar py-3 bg-white shadow-sm">
+  <div class="container d-flex justify-content-between flex-wrap text-center">
+    @if(!string.IsNullOrWhiteSpace(address)) {
+    <div class="stat-item">
+      <i class="bi bi-geo-alt-fill"></i>
+      <div>@address</div>
+    </div>
+    }
+
+    @if(!string.IsNullOrWhiteSpace(openingHours)) {
+    <div class="stat-item">
+      <i class="bi bi-clock-fill"></i>
+      <div>@openingHours</div>
+    </div>
+    }
+
+    @if(!string.IsNullOrWhiteSpace(phone)) {
+    <div class="stat-item">
+      <i class="bi bi-telephone-fill"></i>
+      <div><a href="tel:@phone">@phone</a></div>
+    </div>
+    }
+
+    @if(!string.IsNullOrWhiteSpace(websiteUrl)) {
+    <div class="stat-item">
+      <i class="bi bi-globe"></i>
+      <div><a href="@websiteUrl" target="_blank">Website</a></div>
+    </div>
+    }
+
+  </div>
+</section>
+
+<section class="py-5">
   <div class="container">
-    <div class="row">
-      <div class="col-md-6 mb-4">
-        @if(!string.IsNullOrWhiteSpace(imageUrl))
-        {
-          <img src="@imageUrl" class="img-fluid rounded" alt="@title" />
-        }
-      </div>
+    <div class="row gx-5">
+      <!-- DESCRIPTION COLUMN -->
       <div class="col-md-6">
-        <h1>@title</h1>
-        @if(!string.IsNullOrWhiteSpace(description))
+        <h2>Description</h2>
+        <p>@description</p>
+      </div>
+
+      <!-- REVIEWS COLUMN -->
+      <div class="col-md-6">
+        <!-- STAR RATING HEADER -->
+        <div class="d-flex align-items-center mb-3">
+          @for (int i = 1; i <= 5; i++)
+          {
+            if (i <= rating)
+            {
+              <i class="bi bi-star-fill text-warning fs-4"></i>
+            }
+            else
+            {
+              <i class="bi bi-star fs-4 text-muted"></i>
+            }
+          }
+        </div>
+
+        <h3>Reviews</h3>
+
+        @if (!reviews.Any())
         {
-          <p>@description</p>
+          <p class="text-muted">No reviews yet.</p>
         }
-        @if(categories.Any())
+        else
         {
-          <p><strong>Categories:</strong> @string.Join(", ", categories)</p>
-        }
-        @if(rating > 0)
-        {
-          <p><strong>Rating:</strong> @rating / 5</p>
+          <div class="row gy-4">
+            @foreach (var rev in reviews)
+            {
+              var reviewer = rev.Value<string>("reviewerName");
+              var date     = rev.Value<DateTime?>("date")?.ToString("MM, dd, yyyy");
+              var text     = rev.Value<string>("text");
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <p class="mb-1"><strong>@reviewer</strong> <small class="text-muted">@date</small></p>
+                    <p>@Html.Raw(text)</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
         }
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // when the DOM is ready
+  document.addEventListener("DOMContentLoaded", function() {
+  
+    // give the browser one tick to register the starting state
+    requestAnimationFrame(function() {
+      document
+        .querySelector(".restaurant-hero .hero-content")
+        .classList.add("visible");
+    });
+  });
+</script>

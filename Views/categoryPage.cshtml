@@ -7,7 +7,9 @@
   var current    = Model; 
 
   var catName    = current.Value<string>("categoryName") ?? current.Name;
-  var bannerUrl  = current.Value<IPublishedContent>("categoryImage")?.Url();
+  var catDesc    = current.Value("categoryDescription");
+
+  var bgImage    = current.Value<IPublishedContent>("categoryImage")?.Url();
 	
   // grab *all* restaurantPage items under every root node
     var allRestaurants = Umbraco
@@ -20,10 +22,10 @@
       .ToList();
 }
 
-<section class="category-hero" style="background:url('@bannerUrl') center/cover no-repeat">
-  <div class="container text-center text-white py-5">
+<section class="category-hero" style="background-image:url('@bgImage');>
+  <div class="hero-overlay"></div>
+  <div class="hero-content text-center text-white">
     <h1>@catName</h1>
-    <p class="lead">@current.Value("categoryDescription")</p>
   </div>
 </section>
 
@@ -70,3 +72,17 @@
     }
   </div>
 </section>
+
+<script>
+  // when the DOM is ready
+  document.addEventListener("DOMContentLoaded", function() {
+  
+    // give the browser one tick to register the starting state
+    requestAnimationFrame(function() {
+      document
+        .querySelector(".category-hero .hero-content")
+        .classList.add("visible");
+    });
+  });
+</script>
+

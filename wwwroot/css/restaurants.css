@@ -1,0 +1,114 @@
+.category-hero {
+  position: relative;
+  width: 100vw;             /* span the full viewport width */
+  margin-left: 50%;         /* cancel out Bootstrap’s container centering */
+  transform: translateX(-50%);
+  height: 55vh;             /* or a fixed px: e.g. 400px */
+  background: center/cover no-repeat;
+}
+
+/* make the background dynamic via a generated <style> tag,
+   or use a small inline script to swap in bannerUrl. */
+
+.category-hero .hero-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.category-hero .hero-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0 1rem;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+}
+
+.category-hero .hero-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* responsive tweaks */
+@media (max-width: 768px) {
+  .category-hero {
+    height: 35vh;
+  }
+  .category-hero h1 { font-size: 2rem; }
+}
+
+/* — full-width hero — */
+.restaurant-hero {
+  position: relative;
+  width: 100vw;             /* span the full viewport width */
+  margin-left: 50%;         /* cancel out Bootstrap’s container centering */
+  transform: translateX(-50%);
+  height: 55vh;             /* or a fixed px: e.g. 400px */
+  background: center/cover no-repeat;
+}
+.restaurant-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+.restaurant-hero .hero-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0 1rem;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
+}
+
+.restaurant-hero .hero-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* — stats bar — */
+.stats-bar .stat-item {
+  flex: 1 1 120px;
+  margin: .5rem 0;
+}
+.stats-bar .stat-item i {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: .25rem;
+  color: #007bff;
+}
+
+/* ensure links inherit color in stats bar */
+.stats-bar a {
+  color: inherit;
+  text-decoration: none;
+}
+.stats-bar a:hover {
+  text-decoration: underline;
+}
+
+/* give a little breathing room between columns on small screens */
+@media (max-width: 767px) {
+  .py-5 .row.gx-5 {
+    row-gap: 2rem;
+  }
+}
+
+/* slightly smaller card reviews */
+.card .card-body p {
+  margin-bottom: 0.75rem;
+}
+
