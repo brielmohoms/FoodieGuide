@@ -6,21 +6,22 @@
     Layout = "master.cshtml";
     var current = Model;  
 
-    var restaurants = current
+    // only the direct children of "All Restaurants"
+    var categories = current
       .Children()
-      .Where(x => x.ContentType.Alias == "restaurantPage") 
+      .Where(x => x.ContentType.Alias == "category")  // or your alias
       .ToArray();
 }
 
 <section class="py-5">
   <div class="container">
-    <h1 class="mb-4 text-center">Restaurants</h1>
+    <h1 class="mb-4 text-center">Categories</h1>
     <div class="row gx-4">
-      @foreach (var res in restaurants)
+      @foreach (var cat in categories)
       {
-          var name  = res.Value<string>("restaurantName") ?? res.Name;
-          var desc  = res.Value<string>("description") ?? "";
-          var img   = res.Value<IPublishedContent>("image")?.Url();
+          var name  = cat.Value<string>("categoryName") ?? cat.Name;
+          var desc  = cat.Value<string>("categoryDescription") ?? "";
+          var img   = cat.Value<IPublishedContent>("categoryImage")?.Url();
 
           <div class="col-6 col-md-3 mb-4">
             <div class="card h-100 text-center shadow-sm">
@@ -34,7 +35,7 @@
               <div class="card-body">
                 <h5 class="card-title text-nowrap" style="font-weight:bold">@name</h5>
                 <p class="card-text text-muted text-start text-nowrap">@desc</p>
-                <a href="@res.Url()"
+                <a href="@cat.Url()"
                    class="btn btn-sm btn-primary">View →</a>
               </div>
             </div>

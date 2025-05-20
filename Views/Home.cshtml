@@ -15,6 +15,7 @@
     // 2) Pull the restaurants you picked in the back-office
     var slides = Model.Value<IEnumerable<IPublishedContent>>("sliderRestaurants")
                  ?? Enumerable.Empty<IPublishedContent>();
+
     var first = true;
 
     var introImage = Model.Value<IPublishedContent>("introImage");
@@ -42,11 +43,12 @@
 
 @if (slides.Any())
 {
-  <!-- 3) Bootstrap carousel markup -->
-  <div id="restaurantCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      @foreach (var r in slides)
-      {
+  <!-- Bootstrap carousel markup -->
+  <div class="container-fluid px-0">
+    <div id="restaurantCarousel" class="carousel slide mb-0" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        @foreach (var r in slides)
+        {
           // Capture the data for this slide
           var img = r.Value<IPublishedContent>("image")?.Url();
           var name = r.Value<string>("restaurantName");
@@ -56,16 +58,16 @@
             ? desc.Substring(0, 80) + "…" 
             : desc;
         
-        <div class="carousel-item @(first ? "active" : "")">
-          <img src="@img" class="d-block w-100" alt="@name" />
-          <div class="carousel-caption d-none d-md-block">
-            <h5>@name</h5>
-            <p>@snippet</p>
+          <div class="carousel-item @(first ? "active" : "")">
+            <img src="@img" class="d-block w-100" style="object-fit:cover; height:600px;" alt="@name" />
+            <div class="carousel-caption d-none d-md-block">
+              <h5>@name</h5>
+              <p>@snippet</p>
+            </div>
           </div>
-        </div>
-        first = false;
-      }
-    </div>
+            first = false;
+        }
+      </div>
 
     <!-- Controls -->
     <button class="carousel-control-prev" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="prev">
@@ -90,12 +92,8 @@
         </button>
       }
     </div>
+    </div>
   </div>
-}
-
-else
-{
-  <p class="text-center text-muted">No restaurants selected for the slider.</p>
 }
 
 <section id="intro" class="container py-5">

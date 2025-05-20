@@ -23,13 +23,6 @@
 
 
   <!-- Inline styles for carousel -->
-  <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family: Arial, sans-serif; }
-    main { max-width:1200px; margin:2rem auto; padding:0 1rem; }
-    .carousel-item img { width:100%; height:400px; object-fit:cover; }
-    .carousel-caption { background: rgba(0,0,0,0.5); border-radius:0.25rem; }
-  </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light mb-0">
@@ -41,15 +34,23 @@
 
     @{
     // find the first published content of your landing-page doc type
-    var restaurantsListing = Umbraco.ContentAtRoot()
+    var categories = Umbraco.ContentAtRoot()
+    .FirstOrDefault(x => x.ContentType.Alias == "categoryListings");
+
+    var restaurants = Umbraco.ContentAtRoot()
     .FirstOrDefault(x => x.ContentType.Alias == "restaurantListings");
 
-    var restaurantsUrl = restaurantsListing?.Url() ?? "#";
+    var categoriesUrl  = categories?.Url() ?? "#";
+
+    var restaurantsUrl = restaurants?.Url() ?? "#";
     }
 
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
         <li class="nav-item">
+          <a class="nav-link" href="@categoriesUrl">Categories</a>
+        </li>
+        <li class="nav-item"></li>
           <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
         </li>
       </ul>
