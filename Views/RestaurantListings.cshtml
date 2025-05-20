@@ -9,18 +9,18 @@
     // only the direct children of "All Restaurants"
     var categories = current
       .Children
-      .Where(x => x.ContentType.Alias == "categoryPage")  // or your alias
+      .Where(x => x.ContentType.Alias == "category")  // or your alias
       .ToArray();
 }
 
 <section class="py-5">
   <div class="container">
-    <h1 class="mb-4 text-center">Browse by Category</h1>
+    <h1 class="mb-4 text-center">Restaurants</h1>
     <div class="row gx-4">
       @foreach (var cat in categories)
       {
           var name  = cat.Value<string>("categoryName") ?? cat.Name;
-          var desc  = cat.Value<string>("description") ?? "";
+          var desc  = cat.Value<string>("categoryDescription") ?? "";
           var img   = cat.Value<IPublishedContent>("categoryImage")?.Url();
 
           <div class="col-6 col-md-3 mb-4">
@@ -33,8 +33,8 @@
                      alt="@name" />
               }
               <div class="card-body">
-                <h5 class="card-title">@name</h5>
-                <p class="card-text text-muted">@desc</p>
+                <h5 class="card-title text-nowrap" style="font-weight:bold">@name</h5>
+                <p class="card-text text-muted text-start text-nowrap">@desc</p>
                 <a href="@cat.Url()"
                    class="btn btn-sm btn-primary">View →</a>
               </div>
