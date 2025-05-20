@@ -1,0 +1,72 @@
+﻿@using Umbraco.Extensions
+
+@inherits UmbracoViewPage<IPublishedContent>
+@{
+  Layout = "master.cshtml";
+
+  var current    = Model; 
+
+  var catName    = current.Value<string>("categoryName") ?? current.Name;
+  var bannerUrl  = current.Value<IPublishedContent>("categoryImage")?.Url();
+	
+  // grab *all* restaurantPage items under every root node
+    var allRestaurants = Umbraco
+      .ContentAtRoot()
+      .SelectMany(x => x.DescendantsOrSelfOfType("restaurantPage"));
+
+    // filter to only those whose "category" picker contains the name of this category node
+    var picks = allRestaurants
+      .Where(r => r.Value<string[]>("category")?.Contains(current.Name) == true)
+      .ToList();
+}
+
+<section class="category-hero" style="background:url('@bannerUrl') center/cover no-repeat">
+  <div class="container text-center text-white py-5">
+    <h1>@catName</h1>
+    <p class="lead">@current.Value("categoryDescription")</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="mb-4">Restaurants offering @catName</h2>
+    @if (!picks.Any())
+    {
+      <p class="text-muted">No restaurants found in this category.</p>
+    }
+    else
+    {
+      <div class="row gx-4 gy-4">
+        @foreach(var r in picks)
+        {
+          var img = r.Value<IPublishedContent>("image")?.Url();
+          var name = r.Value<string>("restaurantName");
+          var desc = r.Value<string>("description");
+          var rating = r.Value<int?>("rating") ?? 0;
+
+          <div class="col-12 col-md-6 col-lg-4">
+            <a href="@r.Url()" class="d-block text-reset text-decoration-none h-100" 
+            style="cursor: pointer;">
+            <div class="card h-100 shadow-sm">
+              <img src="@img" class="card-img-top" style="height:200px;object-fit:cover" />
+              <div class="card-body">
+                <h5 class="card-title">@name</h5>
+                <p class="card-text">@desc</p>
+                <div class="rating">
+                  @for (int star = 1; star <= 5; star++)
+                  {
+                    var starCss = star <= rating
+                            ? "bi-star-fill"
+                            : "bi-star";
+                            <i class="bi @starCss text-warning"></i>
+                            }
+                </div>
+              </div>
+            </div>
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

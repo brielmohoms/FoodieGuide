@@ -8,14 +8,14 @@
 
     // only the direct children of "All Restaurants"
     var categories = current
-      .Children
+      .Children()
       .Where(x => x.ContentType.Alias == "category")  // or your alias
       .ToArray();
 }
 
 <section class="py-5">
   <div class="container">
-    <h1 class="mb-4 text-center">Restaurants</h1>
+    <h1 class="mb-4 text-center">Categories</h1>
     <div class="row gx-4">
       @foreach (var cat in categories)
       {
