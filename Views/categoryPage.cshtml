@@ -14,12 +14,12 @@
   // grab *all* restaurantPage items under every root node
     var allRestaurants = Umbraco
       .ContentAtRoot()
-      .SelectMany(x => x.DescendantsOrSelfOfType("restaurantPage"));
+      .DescendantsOrSelfOfType("restaurantPage");
 
     // filter to only those whose "category" picker contains the name of this category node
     var picks = allRestaurants
-      .Where(r => r.Value<string[]>("category")?.Contains(current.Name) == true)
-      .ToList();
+      .Where(r => r.Value<IEnumerable<IPublishedContent>>("category")
+                    ?.Any(c => c.Id == current.Id) == true);
 }
 
 <section class="category-hero" style="background-image:url('@bgImage');>
