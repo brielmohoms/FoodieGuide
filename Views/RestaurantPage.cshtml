@@ -1,5 +1,6 @@
-﻿@using Umbraco.Extensions
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>
+﻿@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 
 @{
     Layout = "master.cshtml";
@@ -16,8 +17,8 @@
     var phone          = Model.Value<string>("phone");
     var websiteUrl     = Model.Value<string>("websiteUrl");
 
-    var reviews        = Model.Value<IEnumerable<IPublishedContent>>("reviews") ?? 
-      Enumerable.Empty<IPublishedContent>();
+    var reviews = Model.Value<BlockListModel>("reviews")
+                       ?? Enumerable.Empty<BlockListItem>();
 }
 
 <section class="restaurant-hero" style="background-image:url('@imageUrl');>
@@ -95,20 +96,37 @@
         else
         {
           <div class="row gy-4">
-            @foreach (var rev in reviews)
-            {
-              var reviewer = rev.Value<string>("reviewerName");
-              var date     = rev.Value<DateTime?>("date")?.ToString("MM, dd, yyyy");
-              var text     = rev.Value<string>("text");
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-body">
-                    <p class="mb-1"><strong>@reviewer</strong> <small class="text-muted">@date</small></p>
-                    <p>@Html.Raw(text)</p>
-                  </div>
-                </div>
+            @foreach (var block in reviews)
+        {
+          // unwrap the underlying content
+          var r = block.Content!;
+          var reviewer        = r.Value<string>("reviewerName");
+          var date            = r.Value<DateTime>("date");
+          var reviewRating    = r.Value<int>("rating");
+          var comment         = r.Value<string>("comment");
+
+          <div class="col-12 col-md-6">
+            <div class="card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong>@reviewer</strong>
+                <small class="text-muted">@date.ToString("MMM d, yyyy")</small>
               </div>
-            }
+              <div class="mb-2">
+                @* render stars *@
+                @for (int i = 0; i < rating; i++)
+                {
+                  <i class="bi bi-star-fill text-warning"></i>
+                }
+                @for (int i = rating; i < 5; i++)
+                {
+                  <i class="bi bi-star text-muted"></i>
+                }
+                <span class="ms-2 text-muted">@($"{rating}/5")</span>
+              </div>
+              <p class="mb-0">@comment</p>
+            </div>
+          </div>
+        }
           </div>
         }
       </div>
