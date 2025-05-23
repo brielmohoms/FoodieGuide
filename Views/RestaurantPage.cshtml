@@ -47,28 +47,28 @@
   <div class="container d-flex justify-content-between flex-wrap text-center">
     @if(!string.IsNullOrWhiteSpace(address)) {
     <div class="stat-item">
-      <i class="bi bi-geo-alt-fill"></i>
+      <i class="bi bi-geo-alt-fill" style="color:#3b5998"></i>
       <div>@address</div>
     </div>
     }
 
     @if(!string.IsNullOrWhiteSpace(openingHours)) {
     <div class="stat-item">
-      <i class="bi bi-clock-fill"></i>
+      <i class="bi bi-clock-fill" style="color:#3b5998"></i>
       <div>@openingHours</div>
     </div>
     }
 
     @if(!string.IsNullOrWhiteSpace(phone)) {
     <div class="stat-item">
-      <i class="bi bi-telephone-fill"></i>
+      <i class="bi bi-telephone-fill" style="color:#3b5998"></i>
       <div><a href="tel:@phone">@phone</a></div>
     </div>
     }
 
     @if(!string.IsNullOrWhiteSpace(websiteUrl)) {
     <div class="stat-item">
-      <i class="bi bi-globe"></i>
+      <i class="bi bi-globe" style="color:#3b5998"></i>
       <div><a href="@websiteUrl" target="_blank">Website</a></div>
     </div>
     }
