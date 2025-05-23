@@ -57,11 +57,12 @@
                 <div class="rating">
                   @for (int star = 1; star <= 5; star++)
                   {
-                    var starCss = star <= rating
-                            ? "bi-star-fill"
-                            : "bi-star";
-                            <i class="bi @starCss text-warning"></i>
-                            }
+                    var isFilled = star <= rating;
+                    var starCss = isFilled ? "bi-star-fill" : "bi-star";
+                    var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
+
+                    <i class="bi @starCss" style="@colorStyle"></i>
+                  }
                 </div>
               </div>
             </div>

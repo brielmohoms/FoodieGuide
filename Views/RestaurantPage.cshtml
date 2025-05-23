@@ -88,19 +88,20 @@
       <!-- REVIEWS COLUMN -->
       <div class="col-md-6">
         <!-- STAR RATING HEADER -->
-        <div class="d-flex align-items-center mb-3">
-          @for (int i = 1; i <= 5; i++)
-          {
-            if (i <= avgInt)
-            {
-              <i class="bi bi-star-fill text-warning fs-4"></i>
-            }
-            else
-            {
-              <i class="bi bi-star fs-4 text-muted"></i>
-            }
-          }
-        </div>
+<div class="d-flex align-items-center mb-3">
+  @for (int i = 1; i <= 5; i++)
+  {
+    if (i <= avgInt)
+    {
+      <i class="bi bi-star-fill fs-4" style="color: #3b5998;"></i>
+    }
+    else
+    {
+      <i class="bi bi-star fs-4 text-muted"></i>
+    }
+  }
+</div>
+
 
         <h3>Reviews</h3>
 
@@ -130,7 +131,7 @@
                 @* render stars *@
                 @for (int i = 0; i < reviewRating; i++)
                 {
-                  <i class="bi bi-star-fill text-warning"></i>
+                  <i class="bi bi-star-fill" style="color: #3b5998;"></i>
                 }
                 @for (int i = reviewRating; i < 5; i++)
                 {
