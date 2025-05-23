@@ -408,3 +408,6 @@ umbraco.db
 *.db
 *.db-shm
 *.db-wal
+
+# ignore local SQLite DBs  
+/umbraco/Data/*.sqlite
