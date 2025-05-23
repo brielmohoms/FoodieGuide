@@ -23,14 +23,17 @@
 
 }
 
-@foreach (var grp in byCategory)
+<section class="container my-5">
+    <h1 class="text-center">Restaurants</h1>
+
+    @foreach (var grp in byCategory)
 {
     var cat = grp.First().Category;
     var catName = cat?.Name ?? "Uncategorized";
     var carouselId = $"carousel-{catName.Replace(" ", "").ToLower()}";
 
     <section class="my-5">
-        <h2>Restaurants offering @catName</h2>
+        <h3 class="mb-2">@catName</h3>
 
         <div id="@carouselId"
              class="carousel slide"
@@ -77,17 +80,31 @@
 
             @if (grp.Count() > itemsPerSlide)
             {
-                <button class="carousel-control-prev" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
+                <button class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#@carouselId"
+                    data-bs-slide="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M6.646 14.354a.5.5 0 0 1-.708-.708L11.293 8 5.938 2.354a.5.5 0 1 1 .707-.708l5.647 5.647a.5.5 0 0 1 0 .708l-5.646 5.647z"/>
+                    </svg>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+ 
+                <button class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#@carouselId"
+                    data-bs-slide="prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M9.354 1.646a.5.5 0 0 1 0 .708L3.707 8l5.647 5.646a.5.5 0 0 1-.708.708L2.646 8.354a.5.5 0 0 1 0-.708L8.646 1.646a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    <span class="visually-hidden">Previous</span>
+                </button>
             }
         </div>
     </section>
 }
+
+</section>
 
 
