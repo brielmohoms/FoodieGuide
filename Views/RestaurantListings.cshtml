@@ -1,6 +1,8 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @using Umbraco.Cms.Core.Models.PublishedContent
 @using Umbraco.Extensions
+@using System.Text.RegularExpressions
+
 
 
 @{
@@ -33,18 +35,18 @@
     <h1 class="text-center">Restaurants</h1>
 
     @foreach (var grp in byCategory)
-{
+    {
     var cat = grp.First().Category;
     var catName = cat?.Name ?? "Uncategorized";
     var carouselId = $"carousel-{catName.Replace(" ", "").ToLower()}";
 
     <section class="my-5">
-        <h3>@catName</h3>
+        <h3 class="mb-2">@catName</h3>
 
         <div id="@carouselId"
              class="carousel slide"
              data-bs-ride="carousel"
-             data-bs-interval="4000">
+             data-bs-interval="4500">
 
             <div class="carousel-inner">
                 @{
@@ -119,12 +121,13 @@
 {
     var occ = group.First().Occasion;
     var occName = occ.Name ?? "Uncategorized";
-    var occasionId = $"carousel-{occName.Replace(" ", "").ToLower()}";
+    var safe = Regex.Replace(occName.ToLower(), @"[^a-z0-9\-]", "");
+    var carouselId = $"carousel-{safe}";
 
     <section class="my-5">
         <h3 class="mb-2">@occName Specials</h3>
 
-        <div id="@occasionId"
+        <div id="@carouselId"
              class="carousel slide"
              data-bs-ride="carousel"
              data-bs-interval="4000">
@@ -171,7 +174,7 @@
             {
                 <button class="carousel-control-next"
                         type="button"
-                        data-bs-target="#@occasionId"
+                        data-bs-target="#@carouselId"
                         data-bs-slide="next">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6.646 14.354a.5.5 0 0 1-.708-.708L11.293 8 5.938 2.354a.5.5 0 1 1 .707-.708l5.647 5.647a.5.5 0 0 1 0 .708l-5.646 5.647z"/>
@@ -181,7 +184,7 @@
 
                 <button class="carousel-control-prev"
                         type="button"
-                        data-bs-target="#@occasionId"
+                        data-bs-target="#@carouselId"
                         data-bs-slide="prev">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M9.354 1.646a.5.5 0 0 1 0 .708L3.707 8l5.647 5.646a.5.5 0 0 1-.708.708L2.646 8.354a.5.5 0 0 1 0-.708L8.646 1.646a.5.5 0 0 1 .708 0z"/>
