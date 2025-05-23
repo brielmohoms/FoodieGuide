@@ -6,10 +6,9 @@
     Layout = "master.cshtml";
     var current = Model;  
 
-    // only the direct children of "All Restaurants"
     var categories = current
       .Children()
-      .Where(x => x.ContentType.Alias == "category")  // or your alias
+      .Where(x => x.ContentType.Alias == "category")
       .ToArray();
 }
 
