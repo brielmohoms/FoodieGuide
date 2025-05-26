@@ -77,77 +77,76 @@
 </section>
 
 <section class="py-5">
-  <div class="container">
-    <div class="row gx-5">
-      <!-- DESCRIPTION COLUMN -->
-      <div class="col-md-6">
-        <h2>Description</h2>
-        <p>@description</p>
-      </div>
-
-      <!-- REVIEWS COLUMN -->
-      <div class="col-md-6">
-        <!-- STAR RATING HEADER -->
-<div class="d-flex align-items-center mb-3">
-  @for (int i = 1; i <= 5; i++)
-  {
-    if (i <= avgInt)
-    {
-      <i class="bi bi-star-fill fs-4" style="color: #3b5998;"></i>
-    }
-    else
-    {
-      <i class="bi bi-star fs-4 text-muted"></i>
-    }
-  }
-</div>
-
-
-        <h3>Reviews</h3>
-
-        @if (!reviews.Any())
-        {
-          <p class="text-muted">No reviews yet.</p>
-        }
-        else
-        {
-          <div class="row gy-4">
-            @foreach (var block in reviews)
-        {
-          // unwrap the underlying content
-          var r = block.Content!;
-          var reviewer        = r.Value<string>("reviewerName");
-          var date            = r.Value<DateTime>("date");
-          var reviewRating    = r.Value<int>("reviewRating");
-          var comment         = r.Value<string>("comment");
-
-          <div class="col-12">
-            <div class="card p-3 h-100">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong>@reviewer</strong>
-                <small class="text-muted">@date.ToString("MMM d, yyyy")</small>
-              </div>
-              <div class="mb-2">
-                @* render stars *@
-                @for (int i = 0; i < reviewRating; i++)
-                {
-                  <i class="bi bi-star-fill" style="color: #3b5998;"></i>
-                }
-                @for (int i = reviewRating; i < 5; i++)
-                {
-                  <i class="bi bi-star text-muted"></i>
-                }
-                <span class="ms-2 text-muted">@($"{reviewRating}/5")</span>
-              </div>
-              <p class="mb-0">@comment</p>
+    <div class="container">
+        <div class="row gx-5">
+            <!-- DESCRIPTION COLUMN -->
+            <div class="col-md-6">
+                <h2>Description</h2>
+                <p>@description</p>
             </div>
-          </div>
-        }
-          </div>
-        }
-      </div>
+
+            <!-- REVIEWS COLUMN -->
+            <div class="col-md-6">
+                <!-- STAR RATING HEADER -->
+                <div class="d-flex align-items-center mb-3">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= avgInt)
+                        {
+                            <i class="bi bi-star-fill fs-4" style="color: #3b5998;"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star fs-4 text-muted"></i>
+                        }
+                    }
+                    <span class="ms-2 text-muted">(@scores.Count review@(scores.Count == 1 ? "" : "s"))</span>
+                </div>
+
+                <h3>Reviews</h3>
+
+                @if (!reviews.Any())
+                {
+                    <p class="text-muted">No reviews yet.</p>
+                }
+                else
+                {
+                    <div class="row gy-4">
+                        @foreach (var block in reviews)
+                        {
+                            var r = block.Content!;
+                            var reviewer        = r.Value<string>("reviewerName");
+                            var date            = r.Value<DateTime>("date");
+                            var reviewRating    = r.Value<int>("reviewRating");
+                            var comment         = r.Value<string>("comment");
+
+                            <div class="col-12">
+                                <div class="card p-3 h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong>@reviewer</strong>
+                                        <small class="text-muted">@date.ToString("MMM d, yyyy")</small>
+                                    </div>
+                                    <div class="mb-2">
+                                        @* render stars *@
+                                        @for (int i = 0; i < reviewRating; i++)
+                                        {
+                                            <i class="bi bi-star-fill" style="color: #3b5998;"></i>
+                                        }
+                                        @for (int i = reviewRating; i < 5; i++)
+                                        {
+                                            <i class="bi bi-star text-muted"></i>
+                                        }
+                                        <span class="ms-2 text-muted">@($"{reviewRating}/5")</span>
+                                    </div>
+                                    <p class="mb-0">@comment</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <script>
