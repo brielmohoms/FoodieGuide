@@ -132,23 +132,18 @@
     </ul>
 </section>
 
-<section id="featured" class="container my-5">
+<!-- Full-width section with grey background and vertical spacing -->
+<section id="featured" class="bg-light py-5 w-100">
+  <div class="container">
     <h2 class="text-center mb-4">Restaurant of the Week</h2>
 
     @foreach (var restaurant in weeklyFavorites)
     {
-      // Core fields
       var imageUrl     = restaurant.Value<IPublishedContent>("image")?.Url();
       var name         = restaurant.Value<string>("restaurantName") ?? restaurant.Name;
       var description  = restaurant.Value<string>("description") ?? "";
-
-      // Category as string[]
       var categoryArr  = restaurant.Value<string[]>("category") ?? Array.Empty<string>();
-      var categoryText = categoryArr.Length > 0
-                         ? string.Join(", ", categoryArr)
-                         : "Uncategorized";
-
-      // Rating as int (1-5)
+      var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
       var ratingValue  = restaurant.Value<int?>("rating") ?? 0;
 
       <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
@@ -160,7 +155,7 @@
         </div>
 
         <!-- RIGHT: content -->
-        <div class="card-body flex-grow-1 p-4">
+        <div class="card-body flex-grow-1 p-4 bg-white rounded-end">
           <h3 class="h4 mb-2">@name</h3>
           <p class="text-muted mb-2">@description</p>
 
@@ -182,7 +177,9 @@
         </div>
       </div>
     }
-  </section>
+  </div>
+</section>
+
 
  <section id="occasion" class="celebrate-section py-5">
   <div class="container">

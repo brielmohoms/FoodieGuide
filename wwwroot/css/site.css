@@ -96,3 +96,8 @@
   width: 40px;
   height: 40px;
 }
+
+section#featured {
+  background-color: #f8f9fa;
+  margin-top: 4rem;
+}
