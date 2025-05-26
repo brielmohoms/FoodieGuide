@@ -1,29 +1,37 @@
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using Umbraco.Cms.Web.Common.DependencyInjection;
+using Umbraco.Extensions;
 
-builder.CreateUmbracoBuilder()
+var builder = WebApplication.CreateBuilder(args);
+
+// 1) Register Umbraco (back-office + website)
+builder.Services
+    .AddUmbraco(builder.Environment, builder.Configuration)
     .AddBackOffice()
     .AddWebsite()
-    .AddComposers()
-    .Build();
+    .AddComposers()   // only if you have IComposer implementations
+    .Build();         // <-- returns void, so no var here
 
-WebApplication app = builder.Build();
+// 2) Build the WebApplication
+var app = builder.Build();
 
+// 3) Boot Umbraco
 await app.BootUmbracoAsync();
 
+// 4) Standard middleware & routing
 app.UseStaticFiles();
-
 app.UseRouting();
 
-app.UseUmbraco()
-    .WithMiddleware(u =>
-    {
-        u.UseBackOffice();
-        u.UseWebsite();
-    })
-    .WithEndpoints(u =>
-    {
-        u.UseBackOfficeEndpoints();
-        u.UseWebsiteEndpoints();
-    });
+app.UseUmbraco()                        
+   .WithMiddleware(m => {
+       m.UseBackOffice();
+       m.UseWebsite();
+   })
+   .WithEndpoints(e => {
+       e.UseBackOfficeEndpoints();
+       e.UseWebsiteEndpoints();
+   });
 
+// 5) Run
 await app.RunAsync();
