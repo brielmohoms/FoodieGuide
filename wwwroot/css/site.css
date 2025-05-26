@@ -1,3 +1,13 @@
+
+h1, h2, h3, h4 {
+  font-family: 'Crimson Text', sans-serif;
+  font-style: italic;
+}
+
+p {
+  font-family: 'Raleway', sans-serif;
+}
+
 /* === Base Pill Style === */
 .category-item a {
   --size: 90px;                       /* pill width */

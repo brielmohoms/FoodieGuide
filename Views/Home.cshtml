@@ -201,8 +201,8 @@
               alt="@occasionName" />
 
             <div class="card-body">      
-              <h3 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold"; 
-              text-align:center;">@occasionName</h3>
+              <h2 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold"; 
+              text-align:center;">@occasionName</h2>
 
               @if (occasionEvents.Any())
               {
@@ -213,7 +213,7 @@
                     var title = parts[0].Trim();
                     var description = parts.Length > 1 ? parts[1].Trim() : "";
                     <li>
-                      <strong>@title</strong>
+                      <h3>@title</h3>
                       <br>
                       @if(!string.IsNullOrWhiteSpace(description)) { @($" {description}") }
                       <br>
