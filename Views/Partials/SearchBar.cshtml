@@ -14,20 +14,31 @@
                      .Trim(); 
 }
 
-<form class="d-flex" method="get" action="@actionUrl">
+<form class="d-flex align-items-center search-bar" method="get" action="@actionUrl" style="max-width: 400px; border-radius: 50px; overflow: hidden; border: 1px solid #3b5998;">
   <input 
-    class="form-control me-2" 
+    class="form-control border-0" 
     type="search" 
     name="searchTerm"
     value="@searchTerm" 
     placeholder="Search restaurants/occasions" 
-    style="border: 1px solid #3b5998; min-width: 255px;"
+    style="min-width: 270px; border-radius: 50px 0 0 50px; padding: 10px 20px; box-shadow: none;"
   />
   <button 
-    class="btn" 
+    class="btn d-flex align-items-center justify-content-center"
     type="submit" 
-    style="background-color: #3b5998; color: white;"
+    style="
+      background-color: #3b5998;
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 5px;
+      margin-left: -10px;
+    "
+    aria-label="Search"
   >
-    Search
+    <i class="bi bi-search"></i>
   </button>
 </form>
+
+
