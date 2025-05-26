@@ -1,10 +1,25 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
+﻿@using System.Linq
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inject Umbraco.Cms.Web.Common.UmbracoHelper UmbracoHelper
+@{
+    var allRestaurants = UmbracoHelper
+                   .ContentAtRoot()
+                   .FirstOrDefault(x => x.ContentType.Alias == "restaurantListings");
 
-<form class="d-flex" method="get" action="/search">
+    var actionUrl = allRestaurants?.Url() ?? Context.Request.Path;
+
+    var searchTerm = (Context.Request
+                        .Query["searchTerm"]
+                        .FirstOrDefault() ?? "")
+                     .Trim(); 
+}
+
+<form class="d-flex" method="get" action="@actionUrl">
   <input 
     class="form-control me-2" 
     type="search" 
-    name="q" 
+    name="searchTerm"
+    value="@searchTerm" 
     placeholder="Search restaurants..." 
     style="border: 1px solid #3b5998;"
   />

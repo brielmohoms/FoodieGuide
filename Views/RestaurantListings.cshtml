@@ -16,23 +16,44 @@
     var restaurants = restaurantListings.DescendantsOfType("restaurantPage")
       .ToArray();
 
+    var searchTerm = (Context.Request
+                            .Query["searchTerm"]
+                            .FirstOrDefault() ?? "")
+                            .Trim();
+    
+    var nameHits = restaurants
+        .Where(r => 
+            (r.Value<string>("restaurantName") ?? "")
+               .Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        .ToArray();
 
-    var byCategory = restaurants
+     var itemsToRender = string.IsNullOrWhiteSpace(searchTerm)
+       ? restaurants
+       : nameHits;
+
+    var byCategory = itemsToRender
         .SelectMany(r => r.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>(),
                     (r, cat) => new { Restaurant = r, Category = cat })
         .GroupBy(x => x.Category.Name)
         .ToArray();
 
-    var byOccasion = restaurants
+    var byOccasion = itemsToRender
         .SelectMany(r => r.Value<IEnumerable<IPublishedContent>>("occasion") ?? Enumerable.Empty<IPublishedContent>(),
                     (r, occ) => new { Restaurant = r, Occasion = occ })
         .GroupBy(x => x.Occasion.Name)
         .ToArray();
-
 }
 
 <section class="container my-5">
     <h1 class="text-center">Restaurants</h1>
+
+    @if (!itemsToRender.Any())
+    {
+        <div class="no-results" style="margin:2rem 0; padding:1rem; border:1px solid #3b5998;">
+            <p>No restaurants found for “<strong>@searchTerm</strong>”.</p>
+            <p><a href="@restaurantListings.Url()">← View all restaurants</a></p>
+        </div>
+    }
 
     @foreach (var grp in byCategory)
     {
@@ -116,6 +137,14 @@
 <hr />
 
 <h2 class="text-center mt-5">Restaurants for Special Occasions</h2>
+
+@if (!itemsToRender.Any())
+    {
+        <div class="no-results" style="margin:2rem 0; padding:1rem; border:1px solid #3b5998;">
+            <p>No restaurants for special occasions found for “<strong>@searchTerm</strong>”.</p>
+            <p><a href="@restaurantListings.Url()">← View all restaurants</a></p>
+        </div>
+    }
 
 @foreach (var group in byOccasion)
 {
