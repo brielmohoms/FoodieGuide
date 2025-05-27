@@ -63,8 +63,7 @@ namespace FoodieGuide.Web.Controllers
                 return CurrentUmbracoPage();
             }
 
-            TempData["RegistrationSuccess"] = "Registration complete. Proceed to login";
-            return RedirectToCurrentUmbracoPage();
+            return Redirect("/login");
         }
 
         [HttpPost]
