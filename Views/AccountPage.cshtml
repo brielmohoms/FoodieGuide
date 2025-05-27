@@ -1,0 +1,14 @@
+﻿@model FoodieGuide.Web.Models.AccountViewModel
+@{
+    Layout = "master.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>My Account</h2>
+    <table class="table">
+        <tr><th>User name</th><td>@Model.Username</td></tr>
+        <tr><th>Full name</th><td>@Model.Name</td></tr>
+        <tr><th>E-mail</th><td>@Model.Email</td></tr>
+    </table>
+    <a asp-action="Settings" asp-controller="MembersSurface" class="btn btn-primary">Edit profile</a>
+</div>

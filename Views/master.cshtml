@@ -3,7 +3,9 @@
 @using System.Linq
 @using Umbraco.Cms.Core.Models.PublishedContent
 @using Umbraco.Extensions
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@using Umbraco.Cms.Core.Security
+@inject IMemberManager MemberManager
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<object>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +21,7 @@
   <link rel="stylesheet" href="/css/weeklyRestaurant.css" />
   <link rel="stylesheet" href="/css/stayUpdated.css" />
   <link rel="stylesheet" href="/css/restaurants.css" />
+  <link rel="stylesheet" href="/css/loginAndRegister.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,6 +33,23 @@
 </head>
 
 <body>
+  @{
+    // Only show the banner if the TempData entry is a **string** → avoids the “True” output.
+    var loginMessage = TempData["LoginSuccess"] as string;
+    var registerMessage = TempData["RegistrationSuccess"] as string;
+  }
+  @if (!string.IsNullOrWhiteSpace(loginMessage))
+  {
+    <div class="alert alert-success text-center mb-0" role="alert">
+      @loginMessage
+    </div>
+  }
+  @if (!string.IsNullOrWhiteSpace(registerMessage))
+  {
+    <div class="alert alert-success text-center mb-0" role="alert">
+      @registerMessage
+    </div>
+  }
   <nav class="navbar navbar-expand-lg navbar-light mb-0"
     style="position: sticky; top: 0; z-index: 1020; background-color: white;;">
     <div class="container">
@@ -61,15 +81,52 @@
         <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
         </li>
       </ul>
+
       @Html.Partial("SearchBar")
-      <a href="/login" class="btn d-flex align-items-center justify-content-center" 
-            type="submit" style="
-            background-color: #3b5998;
-            color: white;
-            width: 80px;
-            height: 40px;  
-            border-radius: 50px;" aria-label="Login"> Login
-      </a>
+
+      @{
+        var isMember =
+        User.Identity?.IsAuthenticated == true &&
+        MemberManager.GetUserAsync(User).Result != null;
+      }
+
+      @if (isMember)
+      {
+        <div class="nav-item dropdown">
+          <a class="btn d-flex align-items-center justify-content-center dropdown-toggle" href="#" id="userDropdown"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            style="background:#3b5998;color:#fff;width:40px;height:40px;border-radius:50%;">
+            <i class="bi bi-person"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" asp-controller="MembersSurface" asp-action="Account">My Account</a></li>
+            <li><a class="dropdown-item" asp-controller="MembersSurface" asp-action="Settings">Settings</a></li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            @* GET-Logout link (development convenience) *@
+            <li>
+              <form asp-controller="MembersSurface" asp-action="Logout" method="post" class="d-inline">
+                @* antiforgery is added automatically *@
+                <button type="submit" class="dropdown-item w-100 text-start">
+                  Logout
+                </button>
+              </form>
+            </li>
+
+          </ul>
+        </div>
+      }
+      else
+      {
+        <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
+                background-color: #3b5998;
+                color: white;
+                width: 80px;
+                height: 40px;  
+                border-radius: 50px;" aria-label="Login"> Login
+        </a>
+      }
     </div>
   </nav>
 

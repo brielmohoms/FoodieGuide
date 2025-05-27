@@ -1,0 +1,27 @@
+﻿@model FoodieGuide.Web.Models.SettingsViewModel
+@{
+    Layout = "master.cshtml";
+}
+
+<div class="container mt-5" style="max-width:600px;">
+    <h2>Account Settings</h2>
+
+    @if (TempData["SettingsSaved"] != null)
+    {
+        <div class="alert alert-success">@TempData["SettingsSaved"]</div>
+    }
+
+    @using (Html.BeginUmbracoForm("Settings","MembersSurface", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true,"",new{@class="text-danger"})
+
+        <div class="mb-3">
+            @Html.LabelFor(m=>m.Email, new{@class="form-label"})
+            @Html.TextBoxFor(m=>m.Email,new{@class="form-control"})
+            @Html.ValidationMessageFor(m=>m.Email,"",new{@class="text-danger"})
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    }
+</div>

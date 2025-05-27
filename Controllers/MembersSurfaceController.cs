@@ -63,34 +63,28 @@ namespace FoodieGuide.Web.Controllers
                 return CurrentUmbracoPage();
             }
 
+            TempData["RegistrationSuccess"] = "Your account has been created successfully. Please proceed to login.";
+
             return Redirect("/login");
         }
 
         [HttpPost]
-        public async Task<IActionResult> HandleLogin(LoginModel model)
+        [ValidateAntiForgeryToken]
+        public IActionResult HandleLogin(LoginModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return CurrentUmbracoPage();
-            }
 
-            var result = await _signInManager.PasswordSignInAsync(
-                userName: model.Username,
-                password: model.Password,
-                isPersistent: false,
-                lockoutOnFailure: false
-            );
-
+            var result = _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false).Result;
             if (result.Succeeded)
             {
-                var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl)
-                                && Url.IsLocalUrl(model.ReturnUrl) ? model.ReturnUrl : "/";
-
-                return Redirect(returnUrl);
+                // Flag for your view
+                TempData["LoginSuccess"] = "Welcome back!";
+                // Redirect to the site root (no hard-coded ID)
+                return Redirect("/");
             }
 
             ModelState.AddModelError("", "Invalid username or password");
-
             return CurrentUmbracoPage();
         }
 
@@ -100,5 +94,58 @@ namespace FoodieGuide.Web.Controllers
             await _signInManager.SignOutAsync();
             return Redirect("/");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Account()
+        {
+            var member = await _memberManager.GetCurrentMemberAsync();
+
+            var vm = new AccountViewModel
+            {
+                Username = member.UserName,
+                Name = member.Name,
+                Email = member.Email
+            };
+
+            return View("AccountPage", vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Settings()
+        {
+            var member = await _memberManager.GetCurrentMemberAsync();
+
+            var vm = new SettingsViewModel
+            {
+                Email = member.Email
+            };
+
+            return View("SettingsPage", vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings(SettingsViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return CurrentUmbracoPage();
+            }
+
+            var member = await _memberManager.GetCurrentMemberAsync();
+
+            member.Email = vm.Email;
+            var result = await _memberManager.UpdateAsync(member);
+
+            if (result.Succeeded)
+            {
+                TempData["SettingsSaved"] = "Profile updated.";
+                return RedirectToCurrentUmbracoPage();
+            }
+
+            ModelState.AddModelError("", result.Errors.First().Description);
+            return CurrentUmbracoPage();
+        }
     }
+
 }

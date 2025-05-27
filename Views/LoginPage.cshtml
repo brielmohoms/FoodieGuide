@@ -9,7 +9,7 @@
 	Layout = "master.cshtml";
     var loginModel = new LoginModel();
     // You can modify this to redirect to a different URL instead of the current one
-    loginModel.RedirectUrl = null;
+    loginModel.RedirectUrl = "/";
 }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -51,7 +51,7 @@ else
             "HandleLogin", new { RedirectUrl = loginModel.RedirectUrl })) {
           
           <h4 class="text-center">Log in</h4>
-          <hr />
+          <hr class="login-hr"/>
           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
           <div class="mb-3">
