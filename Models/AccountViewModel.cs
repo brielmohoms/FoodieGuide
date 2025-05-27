@@ -8,5 +8,15 @@ namespace FoodieGuide.Web.Models
 
         public string Email { get; set; }
 
+        public string Phone { get; set; }
+
+        public string Bio { get; set; }
+
+        public string Street { get; set; }
+
+        public string City { get; set; }
+
+        public string Zip { get; set; }
+
     }
 }

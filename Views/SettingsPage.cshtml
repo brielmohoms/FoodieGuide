@@ -3,25 +3,52 @@
     Layout = "master.cshtml";
 }
 
-<div class="container mt-5" style="max-width:600px;">
-    <h2>Account Settings</h2>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 100vh; padding-top: 50px; background-color: #f9f9f9;">
+    <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
+        <h2 class="text-center mb-4"><em>Settings</em></h2>
 
-    @if (TempData["SettingsSaved"] != null)
-    {
-        <div class="alert alert-success">@TempData["SettingsSaved"]</div>
-    }
+        <form>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" value="mike@email.de">
+            </div>
 
-    @using (Html.BeginUmbracoForm("Settings","MembersSurface", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true,"",new{@class="text-danger"})
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" value="Mike Gayap">
+            </div>
 
-        <div class="mb-3">
-            @Html.LabelFor(m=>m.Email, new{@class="form-label"})
-            @Html.TextBoxFor(m=>m.Email,new{@class="form-control"})
-            @Html.ValidationMessageFor(m=>m.Email,"",new{@class="text-danger"})
-        </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone">
+            </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-    }
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea class="form-control" id="bio" rows="3"></textarea>
+            </div>
+
+            <h5 class="mt-4 mb-3">Address</h5>
+
+            <div class="mb-3">
+                <label for="street" class="form-label">Street</label>
+                <input type="text" class="form-control" id="street">
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="zip" class="form-label">ZIP</label>
+                    <input type="text" class="form-control" id="zip">
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4" style="background-color:#3b5998; border: 1px solid #3b5998">Save</button>
+            </div>
+        </form>
+    </div>
 </div>

@@ -3,12 +3,43 @@
     Layout = "master.cshtml";
 }
 
-<div class="container mt-5">
-    <h2>My Account</h2>
-    <table class="table">
-        <tr><th>User name</th><td>@Model.Username</td></tr>
-        <tr><th>Full name</th><td>@Model.Name</td></tr>
-        <tr><th>E-mail</th><td>@Model.Email</td></tr>
-    </table>
-    <a asp-action="Settings" asp-controller="MembersSurface" class="btn btn-primary">Edit profile</a>
+<div class="d-flex justify-content-center align-items-start"
+    style="min-height: 100vh; padding-top: 50px; background-color: #f9f9f9">
+    <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
+        <h2 class="text-center mb-4">Account</h2>
+
+        <div class="mb-3">
+            <strong>Email:</strong>
+            <div>@Model.Username</div>
+        </div>
+
+        <div class="mb-3">
+            <strong>Name:</strong>
+            <div>@Model.Name</div>
+        </div>
+
+        <div class="mb-3">
+            <strong>Phone:</strong>
+            <div>@Model.Phone</div>
+        </div>
+
+        <div class="mb-3">
+            <strong>Bio:</strong>
+            <div>@Model.Bio</div>
+        </div>
+
+        <div class="mb-4">
+            <strong>Address:</strong>
+            <div>@Model.Street<br />@Model.City @Model.Zip</div>
+        </div>
+
+        <div class="text-center">
+            <a href="/settings" class="btn px-4"
+                style="color: #3b5998; border: 1px solid #3b5998; background-color: transparent;"
+                onmouseover="this.style.backgroundColor='#f2f2f2'"
+                onmouseout="this.style.backgroundColor='transparent'">
+                Edit Profile
+            </a>
+        </div>
+    </div>
 </div>

@@ -9,13 +9,19 @@ using FoodieGuide.Web.Models;
 using Umbraco.Cms.Web.Website.Controllers;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.Common.Security;
+using Umbraco.Cms.Core.IO;
 
 namespace FoodieGuide.Web.Controllers
 {
     public class MembersSurfaceController : SurfaceController
     {
         private readonly IMemberManager _memberManager;
+
         private readonly IMemberSignInManager _signInManager;
+
+        private readonly IMemberService _memberService;
+
+        private readonly MediaFileManager _mediaFileManager;
 
         public MembersSurfaceController(
             IUmbracoContextAccessor umbracoContextAccessor,
@@ -24,11 +30,15 @@ namespace FoodieGuide.Web.Controllers
             AppCaches appCaches,
             IProfilingLogger profilingLogger,
             IPublishedUrlProvider publishedUrlProvider,
+            IMemberService memberService,
+            MediaFileManager mediaFileManager,
             IMemberManager memberManager,
             IMemberSignInManager signInManager
         ) : base(umbracoContextAccessor, databaseFactory, serviceContext, appCaches,
         profilingLogger, publishedUrlProvider)
         {
+            _mediaFileManager = mediaFileManager;
+            _memberService = memberService;
             _memberManager = memberManager;
             _signInManager = signInManager;
         }
@@ -98,13 +108,20 @@ namespace FoodieGuide.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Account()
         {
-            var member = await _memberManager.GetCurrentMemberAsync();
+            var memberUser = await _memberManager.GetCurrentMemberAsync();
+            var memberEntity = _memberService.GetByKey(memberUser.Key);
 
             var vm = new AccountViewModel
             {
-                Username = member.UserName,
-                Name = member.Name,
-                Email = member.Email
+                Username = memberUser.UserName,
+                Name = memberUser.Name,
+                Email = memberUser.Email,
+
+                Phone = memberEntity.GetValue<string>("phone"),
+                Bio = memberEntity.GetValue<string>("bio"),
+                Street = memberEntity.GetValue<string>("street"),
+                City = memberEntity.GetValue<string>("city"),
+                Zip = memberEntity.GetValue<string>("zip")
             };
 
             return View("AccountPage", vm);
@@ -113,11 +130,20 @@ namespace FoodieGuide.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Settings()
         {
-            var member = await _memberManager.GetCurrentMemberAsync();
+            var memberUser = await _memberManager.GetCurrentMemberAsync();
+
+            var memberEntity = _memberService.GetByKey(memberUser.Key);
 
             var vm = new SettingsViewModel
             {
-                Email = member.Email
+                Email = memberUser.Email,
+                Name = memberUser.Name,
+
+                Phone = memberEntity.GetValue<string>("phone"),
+                Bio = memberEntity.GetValue<string>("bio"),
+                Street = memberEntity.GetValue<string>("street"),
+                City = memberEntity.GetValue<string>("city"),
+                Zip = memberEntity.GetValue<string>("zip")
             };
 
             return View("SettingsPage", vm);
@@ -132,19 +158,23 @@ namespace FoodieGuide.Web.Controllers
                 return CurrentUmbracoPage();
             }
 
-            var member = await _memberManager.GetCurrentMemberAsync();
+            var memberUser = await _memberManager.GetCurrentMemberAsync();
+            var memberEntity = _memberService.GetByKey(memberUser.Key);
 
-            member.Email = vm.Email;
-            var result = await _memberManager.UpdateAsync(member);
+            memberUser.Email = vm.Email;
+            memberUser.Name = vm.Name;
 
-            if (result.Succeeded)
-            {
-                TempData["SettingsSaved"] = "Profile updated.";
-                return RedirectToCurrentUmbracoPage();
-            }
+            memberEntity.SetValue("phone", vm.Phone);
+            memberEntity.SetValue("bio", vm.Bio);
+            memberEntity.SetValue("street", vm.Street);
+            memberEntity.SetValue("city", vm.City);
+            memberEntity.SetValue("zip", vm.Zip);
 
-            ModelState.AddModelError("", result.Errors.First().Description);
-            return CurrentUmbracoPage();
+            _memberService.Save(memberEntity);
+            await _memberManager.UpdateAsync(memberUser);
+
+            TempData["SettingsSaved"] = "Profile updated.";
+            return RedirectToCurrentUmbracoPage();
         }
     }
 
