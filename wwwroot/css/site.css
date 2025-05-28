@@ -9,10 +9,10 @@ p {
 
 /* === Base Pill Style === */
 .category-item a {
-  --size: 90px;                       /* pill width */
+  --size: 60px;                       /* pill width */
   --radius: calc(var(--size) / 2);
   width: var(--size);
-  height: calc(var(--size) * 4.8);
+  height: 300px;
   background: var(--bg) center/cover no-repeat;
   border-radius: var(--radius);
   position: relative;
@@ -77,9 +77,9 @@ p {
 
 /* === Hover State: Pill → Card === */
 .category-item a:hover {
-  --size: 90px;
+  --size: 60px;
   height: calc(var(--size) * 4.8);
-  width: 350px;               /* expand to card width */             
+  width: 250px;               /* expand to card width */             
   border-radius: 12px;        /* softer corners */
 }
 
