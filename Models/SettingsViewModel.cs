@@ -7,7 +7,7 @@ namespace FoodieGuide.Web.Models
         [Required, EmailAddress]
         public string Email { get; set; }
 
-        [Required, EmailAddress]
+        [Required]
         public string Name { get; set; }
 
         [Phone]
