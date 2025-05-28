@@ -1,11 +1,11 @@
-﻿@using System
+﻿﻿@using System
 @using System.Collections.Generic
 @using System.Linq
 @using Umbraco.Cms.Core.Models.PublishedContent
 @using Umbraco.Extensions
 @using Umbraco.Cms.Core.Security
 @inject IMemberManager MemberManager
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<object>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +33,6 @@
 </head>
 
 <body>
-  @* success after login *@
   @if (TempData["LoginSuccess"] is string loginMsg)
   {
     <div class="container mt-3">
@@ -57,7 +56,7 @@
       @TempData["SettingsSaved"]
     </div>
   }
-
+  
   <nav class="navbar navbar-expand-lg navbar-light mb-0"
     style="position: sticky; top: 0; z-index: 1020; background-color: white;;">
     <div class="container">
@@ -74,9 +73,16 @@
         var restaurants = Umbraco.ContentAtRoot()
         .FirstOrDefault(x => x.ContentType.Alias == "restaurantListings");
 
+        var occasions = Umbraco.ContentAtRoot()
+        .FirstOrDefault(x => x.ContentType.Alias == "occasionListings");
+
+        var occasionCategory = occasions?.Children() ?? Enumerable.Empty<IPublishedContent>();
+
         var categoriesUrl = categories?.Url() ?? "#";
 
         var restaurantsUrl = restaurants?.Url() ?? "#";
+
+        var occasionsUrl = occasions?.Url() ?? "#";
 
       }
 
@@ -85,12 +91,28 @@
         <li class="nav-item">
           <a class="nav-link" href="@categoriesUrl">Categories</a>
         </li>
-        <li class="nav-item"></li>
-        <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
+        <li class="nav-item">
+          <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="occasionDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Occasions
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="occasionDropdown">
+            @foreach (var category in occasionCategory)
+            {
+              <li>
+                <a class="dropdown-item" href="@category.Url()">
+                  @category.Name
+                </a>
+              </li>
+            }
+          </ul>
         </li>
       </ul>
 
-      @Html.Partial("SearchBar")
+      <partial name="SearchBar" />
 
       @{
         var isMember =
@@ -128,11 +150,11 @@
       else
       {
         <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
-                          background-color: #3b5998;
-                          color: white;
-                          width: 80px;
-                          height: 40px;  
-                          border-radius: 50px;" aria-label="Login"> Login
+                background-color: #3b5998;
+                color: white;
+                width: 80px;
+                height: 40px;  
+                border-radius: 50px;" aria-label="Login"> Login
         </a>
       }
     </div>
