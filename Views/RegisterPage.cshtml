@@ -35,10 +35,10 @@
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6"><!-- adjust md-6 up or down to taste -->
-      @using (Html.BeginUmbracoForm<UmbRegisterController>(
+<div class="d-flex justify-content-center align-items-start"
+    style="min-height: 100vh; padding-top: 50px; background-color: #f9f9f9">
+    <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
+        @using (Html.BeginUmbracoForm<UmbRegisterController>(
             "HandleRegisterMember",
             new
             {
@@ -48,8 +48,7 @@
               AutomaticLogIn = registerModel.AutomaticLogIn
             }))
       {
-        <h2 style="text-align: center">Create a new account</h2>
-        <hr class="register-hr" />
+        <h2 class="section-title text-center fw-bold">Register</h2>
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="mb-3">
@@ -88,5 +87,4 @@
         </div>
       }
     </div>
-  </div>
 </div>

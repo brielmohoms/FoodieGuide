@@ -42,17 +42,15 @@
 }
 else
 {
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-
+  <div class="d-flex justify-content-center align-items-start"
+    style="min-height: 100vh; padding-top: 50px; background-color: #f9f9f9">
+    <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
         <div class="login-form">
           @using (Html.BeginUmbracoForm<UmbLoginController>(
                   "HandleLogin", new { RedirectUrl = loginModel.RedirectUrl }))
           {
 
-            <h4 class="text-center">Log in</h4>
-            <hr class="login-hr" />
+            <h2 class="section-title text-center fw-bold">Login</h2>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="mb-3">
@@ -84,8 +82,7 @@ else
             </div>
           }
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
 }
