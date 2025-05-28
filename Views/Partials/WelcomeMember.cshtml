@@ -1,0 +1,32 @@
+﻿@using Umbraco.Cms.Core.Security
+@inject IMemberManager MemberManager
+
+@{
+    var memberName = string.Empty;
+
+    if (MemberManager.IsLoggedIn())
+    {
+        var member = await MemberManager.GetCurrentMemberAsync();
+        memberName = member?.UserName ?? member?.UserName;
+    }
+}
+
+@if (!string.IsNullOrWhiteSpace(memberName))
+{
+    <div class="login-status">
+
+        <span class="welcome-text ms-5">
+            Welcome&nbsp;back,&nbsp;@memberName!
+        </span>
+
+    </div>
+}
+
+<style>
+    /* site.css */
+    .welcome-text {
+        font-weight: 600;
+        color: #1d3c6e;
+        white-space: nowrap;
+    }
+</style>

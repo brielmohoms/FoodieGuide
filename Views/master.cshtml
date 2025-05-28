@@ -33,6 +33,8 @@
 </head>
 
 <body>
+
+
   @if (TempData["LoginSuccess"] != null)
   {
     <div class="alert alert-success text-center mb-4">
@@ -60,7 +62,6 @@
       <a class="navbar-brand" href="/">
         <img src="/media/apcp3ftx/logo_small.jpeg" alt="FoodieGuide Logo" height="75" />
       </a>
-
 
       @{
         // find the first published content of your landing-page doc type
@@ -111,6 +112,8 @@
 
       <partial name="SearchBar" />
 
+      @await Html.PartialAsync("WelcomeMember")
+
       @{
         var isMember =
         User.Identity?.IsAuthenticated == true &&
@@ -122,7 +125,7 @@
         <div class="nav-item dropdown">
           <a class="btn d-flex align-items-center justify-content-center dropdown-toggle" href="#" id="userDropdown"
             role="button" data-bs-toggle="dropdown" aria-expanded="false"
-            style="background:#3b5998;color:#fff;width:40px;height:40px;border-radius:50%;">
+            style="background:#3b5998;color:#fff;width:45px;height:45px;border-radius:50%;">
             <i class="bi bi-person"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -131,15 +134,28 @@
             <li>
               <hr class="dropdown-divider" />
             </li>
-            @* GET-Logout link (development convenience) *@
+
             <li>
               <form asp-controller="MembersSurface" asp-action="Logout" method="post" class="d-inline">
-                @* antiforgery is added automatically *@
                 <button type="submit" class="dropdown-item w-100 text-start">
                   Logout
                 </button>
               </form>
             </li>
+
+            <style>
+              .dropdown-menu .dropdown-item.active,
+              .dropdown-menu .dropdown-item:active {
+                background-color: #3b5998 !important;
+                color: #fff !important;
+              }
+
+              .dropdown-menu .dropdown-item:hover,
+              .dropdown-menu .dropdown-item:focus {
+                background-color: #3b5998 !important;
+                color: #fff !important;
+              }
+            </style>
 
           </ul>
         </div>
@@ -147,11 +163,11 @@
       else
       {
         <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
-                  background-color: #3b5998;
-                  color: white;
-                  width: 80px;
-                  height: 40px;  
-                  border-radius: 50px;" aria-label="Login"> Login
+                      background-color: #3b5998;
+                      color: white;
+                      width: 80px;
+                      height: 40px;  
+                      border-radius: 50px;" aria-label="Login"> Login
         </a>
       }
     </div>

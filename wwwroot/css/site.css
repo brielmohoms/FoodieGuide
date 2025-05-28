@@ -110,3 +110,10 @@ section#featured {
   background-color: #f8f9fa;
   margin-top: 4rem;
 }
+
+/* site.css */
+.welcome-text{
+    font-weight:600;
+    color:#1d3c6e;      /* brand blue */
+    white-space:nowrap; /* keep on one line */
+}
