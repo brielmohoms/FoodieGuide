@@ -1,11 +1,11 @@
-﻿﻿@using System
+﻿@using System
 @using System.Collections.Generic
 @using System.Linq
 @using Umbraco.Cms.Core.Models.PublishedContent
 @using Umbraco.Extensions
 @using Umbraco.Cms.Core.Security
 @inject IMemberManager MemberManager
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<object>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,13 +33,10 @@
 </head>
 
 <body>
-  @if (TempData["LoginSuccess"] is string loginMsg)
+  @if (TempData["LoginSuccess"] != null)
   {
-    <div class="container mt-3">
-      <div class="alert alert-success text-center alert-dismissible fade show" role="alert">
-        @loginMsg
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
+    <div class="alert alert-success text-center mb-4">
+      @TempData["LoginSuccess"]
     </div>
   }
 
@@ -56,7 +53,7 @@
       @TempData["SettingsSaved"]
     </div>
   }
-  
+
   <nav class="navbar navbar-expand-lg navbar-light mb-0"
     style="position: sticky; top: 0; z-index: 1020; background-color: white;;">
     <div class="container">
@@ -150,11 +147,11 @@
       else
       {
         <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
-                background-color: #3b5998;
-                color: white;
-                width: 80px;
-                height: 40px;  
-                border-radius: 50px;" aria-label="Login"> Login
+                  background-color: #3b5998;
+                  color: white;
+                  width: 80px;
+                  height: 40px;  
+                  border-radius: 50px;" aria-label="Login"> Login
         </a>
       }
     </div>
