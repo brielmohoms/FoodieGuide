@@ -85,12 +85,12 @@ namespace FoodieGuide.Web.Controllers
             if (!ModelState.IsValid)
                 return CurrentUmbracoPage();
 
-            var result = _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false).Result;
+            var result = _signInManager.PasswordSignInAsync(model.Username, model.Password,
+            false, false).Result;
+
             if (result.Succeeded)
             {
-                // Flag for your view
-                TempData["LoginSuccess"] = "Welcome back!";
-                // Redirect to the site root (no hard-coded ID)
+                TempData["LoginSuccess"] = "Login successful. Welcome back!";
                 return Redirect("/");
             }
 
@@ -155,7 +155,7 @@ namespace FoodieGuide.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return CurrentUmbracoPage();
+                return View("SettingsPage", vm);
             }
 
             var memberUser = await _memberManager.GetCurrentMemberAsync();
@@ -174,7 +174,7 @@ namespace FoodieGuide.Web.Controllers
             await _memberManager.UpdateAsync(memberUser);
 
             TempData["SettingsSaved"] = "Profile updated.";
-            return RedirectToCurrentUmbracoPage();
+            return RedirectToAction(nameof(Settings));
         }
     }
 

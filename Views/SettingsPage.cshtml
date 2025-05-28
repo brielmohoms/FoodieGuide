@@ -8,61 +8,84 @@
     <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
         <h2 class="text-center mb-4"><em>Settings</em></h2>
 
-        @if (TempData["SettingsSaved"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SettingsSaved"]
-            </div>
-        }
-
         @using (Html.BeginUmbracoForm("Settings", "MembersSurface", FormMethod.Post))
         {
-            @Html.AntiForgeryToken()
-
             <form>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" value="mike@email.de">
-                </div>
+                @Html.AntiForgeryToken()
+                @{
+                    var anyErrors = ViewData.ModelState.Values.Any(v => v.Errors.Count > 0);
+                    
+                    if (anyErrors)
+                    {
+                        @Html.ValidationSummary(
+                            excludePropertyErrors: true,
+                            message: "",
+                            htmlAttributes: new { @class = "alert alert-danger" })
+                    }
+                }
 
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" value="Mike Gayap">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone">
+                    @Html.LabelFor(m => m.Name)
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="mb-3">
-                    <label for="bio" class="form-label">Bio</label>
-                    <textarea class="form-control" id="bio" rows="3"></textarea>
-                </div>
+                    @Html.LabelFor(m => m.Phone)
+                    @Html.TextBoxFor(
+                    m => m.Phone,
+                                new { @class = "form-control", type = "tel" })
+                @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger" })
+            </div>
 
-                <h5 class="mt-4 mb-3">Address</h5>
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Bio)
+                @Html.TextAreaFor(
+                                m => m.Bio,
+                                4, /* rows */
+                                60, /* cols (ignored by Bootstrap but keeps HTML valid) */
+                                new { @class = "form-control", placeholder = "Tell us a bit about yourself…" })
+                @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="mb-3">
-                    <label for="street" class="form-label">Street</label>
-                    <input type="text" class="form-control" id="street">
-                </div>
+            <h5 class="mt-4 mb-3">Address</h5>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="zip" class="form-label">ZIP</label>
-                        <input type="text" class="form-control" id="zip">
-                    </div>
-                </div>
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Street)
+                @Html.TextBoxFor(
+                                m => m.Street,
+                                new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Street, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary px-4"
-                        style="background-color:#3b5998; border: 1px solid #3b5998">Save</button>
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    @Html.LabelFor(m => m.City)
+                    @Html.TextBoxFor(
+                                        m => m.City,
+                                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger" })
                 </div>
-            </form>
-        }
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Zip)
+                    @Html.TextBoxFor(
+                                        m => m.Zip,
+                                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Zip, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4"
+                    style="background-color:#3b5998; border: 1px solid #3b5998">Save</button>
+            </div>
+        </form>
+                }
     </div>
 </div>

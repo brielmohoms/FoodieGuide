@@ -39,53 +39,54 @@
   <div class="row justify-content-center">
     <div class="col-md-6"><!-- adjust md-6 up or down to taste -->
       @using (Html.BeginUmbracoForm<UmbRegisterController>(
-        "HandleRegisterMember",
-        new
-        {
-          MemberTypeAlias = registerModel.MemberTypeAlias,
-          UsernameIsEmail = registerModel.UsernameIsEmail,
-          RedirectUrl = registerModel.RedirectUrl,
-          AutomaticLogIn = registerModel.AutomaticLogIn
-        }))
-        {
-          <h2 style="text-align: center">Create a new account</h2>
-          <hr class="register-hr"/>
-          <div asp-validation-summary="All" class="text-danger"></div>
+            "HandleRegisterMember",
+            new
+            {
+              MemberTypeAlias = registerModel.MemberTypeAlias,
+              UsernameIsEmail = registerModel.UsernameIsEmail,
+              RedirectUrl = registerModel.RedirectUrl,
+              AutomaticLogIn = registerModel.AutomaticLogIn
+            }))
+      {
+        <h2 style="text-align: center">Create a new account</h2>
+        <hr class="register-hr" />
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-          <div class="mb-3">
-            <label asp-for="@registerModel.Name" class="form-label"></label>
-            <input asp-for="@registerModel.Name" class="form-control" aria-required="true" />
-            <span asp-validation-for="@registerModel.Name" class="form-text text-danger"></span>
-          </div>
-          <div class="mb-3">
-            <label asp-for="@registerModel.Username" class="form-label"></label>
-            <input asp-for="@registerModel.Username" class="form-control" aria-required="true" />
-            <span asp-validation-for="@registerModel.Username" class="form-text text-danger"></span>
-          </div>
-          <div class="mb-3">
-            <label asp-for="@registerModel.Email" class="form-label"></label>
-            <input asp-for="@registerModel.Email" class="form-control" aria-required="true" />
-            <span asp-validation-for="@registerModel.Email" class="form-text text-danger"></span>
-          </div>
-          <div class="mb-3">
-            <label asp-for="@registerModel.Password" class="form-label"></label>
-            <input asp-for="@registerModel.Password" class="form-control" aria-required="true" />
-            <span asp-validation-for="@registerModel.Password" class="form-text text-danger"></span>
-          </div>
-          <div class="mb-3">
-            <label asp-for="@registerModel.ConfirmPassword" class="form-label"></label>
-            <input asp-for="@registerModel.ConfirmPassword" class="form-control" aria-required="true" />
-            <span asp-validation-for="@registerModel.ConfirmPassword" class="form-text text-danger"></span>
-          </div>
+        <div class="mb-3">
+          <label asp-for="@registerModel.Name" class="form-label"></label>
+          <input asp-for="@registerModel.Name" class="form-control" aria-required="true" />
+          <span asp-validation-for="@registerModel.Name" class="form-text text-danger"></span>
+        </div>
+        <div class="mb-3">
+          <label asp-for="@registerModel.Username" class="form-label"></label>
+          <input asp-for="@registerModel.Username" class="form-control" aria-required="true" />
+          <span asp-validation-for="@registerModel.Username" class="form-text text-danger"></span>
+        </div>
+        <div class="mb-3">
+          <label asp-for="@registerModel.Email" class="form-label"></label>
+          <input asp-for="@registerModel.Email" class="form-control" aria-required="true" />
+          <span asp-validation-for="@registerModel.Email" class="form-text text-danger"></span>
+        </div>
+        <div class="mb-3">
+          <label asp-for="@registerModel.Password" class="form-label"></label>
+          <input asp-for="@registerModel.Password" class="form-control" aria-required="true" />
+          <span asp-validation-for="@registerModel.Password" class="form-text text-danger"></span>
+        </div>
+        <div class="mb-3">
+          <label asp-for="@registerModel.ConfirmPassword" class="form-label"></label>
+          <input asp-for="@registerModel.ConfirmPassword" class="form-control" aria-required="true" />
+          <span asp-validation-for="@registerModel.ConfirmPassword" class="form-text text-danger"></span>
+        </div>
 
-          <div class="d-flex align-items-center gap-2 mt-2">
-            <button type="submit" class="btn btn-primary" style="border-radius: 50px; background-color: #3b5998; color:white">Register</button>
-            <span class="m-0">
-              Already have an account?
-              <a href="/login" style="color: #3b5998">Login</a>
-            </span>
-          </div>
-        }
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <button type="submit" class="btn btn-primary"
+            style="border-radius: 50px; background-color: #3b5998; color:white">Register</button>
+          <span class="m-0">
+            Already have an account?
+            <a href="/login" style="color: #3b5998">Login</a>
+          </span>
+        </div>
+      }
     </div>
   </div>
 </div>

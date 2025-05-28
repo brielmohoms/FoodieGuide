@@ -5,7 +5,7 @@
 @using Umbraco.Extensions
 @using Umbraco.Cms.Core.Security
 @inject IMemberManager MemberManager
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<object>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,23 +33,31 @@
 </head>
 
 <body>
-  @{
-    // Only show the banner if the TempData entry is a **string** → avoids the “True” output.
-    var loginMessage = TempData["LoginSuccess"] as string;
-    var registerMessage = TempData["RegistrationSuccess"] as string;
-  }
-  @if (!string.IsNullOrWhiteSpace(loginMessage))
+  @* success after login *@
+  @if (TempData["LoginSuccess"] is string loginMsg)
   {
-    <div class="alert alert-success text-center mb-0" role="alert">
-      @loginMessage
+    <div class="container mt-3">
+      <div class="alert alert-success text-center alert-dismissible fade show" role="alert">
+        @loginMsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
     </div>
   }
-  @if (!string.IsNullOrWhiteSpace(registerMessage))
+
+  @if (TempData["RegistrationSuccess"] != null)
   {
-    <div class="alert alert-success text-center mb-0" role="alert">
-      @registerMessage
+    <div class="alert alert-success text-center mb-4">
+      @TempData["RegistrationSuccess"]
     </div>
   }
+
+  @if (TempData["SettingsSaved"] != null)
+  {
+    <div class="alert alert-success text-center mb-4">
+      @TempData["SettingsSaved"]
+    </div>
+  }
+
   <nav class="navbar navbar-expand-lg navbar-light mb-0"
     style="position: sticky; top: 0; z-index: 1020; background-color: white;;">
     <div class="container">
@@ -66,16 +74,9 @@
         var restaurants = Umbraco.ContentAtRoot()
         .FirstOrDefault(x => x.ContentType.Alias == "restaurantListings");
 
-        var occasions = Umbraco.ContentAtRoot()
-        .FirstOrDefault(x => x.ContentType.Alias == "occasionListings");
-
-        var occasionCategory = occasions?.Children() ?? Enumerable.Empty<IPublishedContent>();
-
         var categoriesUrl = categories?.Url() ?? "#";
 
         var restaurantsUrl = restaurants?.Url() ?? "#";
-
-        var occasionsUrl = occasions?.Url() ?? "#";
 
       }
 
@@ -84,28 +85,12 @@
         <li class="nav-item">
           <a class="nav-link" href="@categoriesUrl">Categories</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="occasionDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Occasions
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="occasionDropdown">
-            @foreach (var category in occasionCategory)
-            {
-              <li>
-                <a class="dropdown-item" href="@category.Url()">
-                  @category.Name
-                </a>
-              </li>
-            }
-          </ul>
+        <li class="nav-item"></li>
+        <a class="nav-link" href="@restaurantsUrl">Restaurants</a>
         </li>
       </ul>
 
-      <partial name="SearchBar" />
+      @Html.Partial("SearchBar")
 
       @{
         var isMember =
@@ -143,11 +128,11 @@
       else
       {
         <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
-                background-color: #3b5998;
-                color: white;
-                width: 80px;
-                height: 40px;  
-                border-radius: 50px;" aria-label="Login"> Login
+                          background-color: #3b5998;
+                          color: white;
+                          width: 80px;
+                          height: 40px;  
+                          border-radius: 50px;" aria-label="Login"> Login
         </a>
       }
     </div>
