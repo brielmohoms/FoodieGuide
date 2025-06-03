@@ -12,7 +12,7 @@ p {
   --size: 60px;                       /* pill width */
   --radius: calc(var(--size) / 2);
   width: var(--size);
-  height: 300px;
+  height: 350px;
   background: var(--bg) center/cover no-repeat;
   border-radius: var(--radius);
   position: relative;
@@ -117,3 +117,12 @@ section#featured {
     color:#1d3c6e;      /* brand blue */
     white-space:nowrap; /* keep on one line */
 }
+
+.category-icon [data-lucide] {
+  width: 40px;
+  height: 40px;
+    stroke: #000 !important;
+  fill: none !important;
+  color: #000 !important;
+}
+
