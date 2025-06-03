@@ -7,6 +7,11 @@ p {
   font-family: 'Raleway', sans-serif;
 }
 
+body {
+  overflow-x: hidden;
+}
+
+
 /* === Base Pill Style === */
 .category-item a {
   --size: 60px;                       /* pill width */
@@ -104,6 +109,12 @@ p {
   bottom: 16px;
   width: 40px;
   height: 40px;
+}
+
+.category-list {
+  max-width: 100%;
+  overflow-x: hidden;
+  flex-wrap: wrap;
 }
 
 section#featured {

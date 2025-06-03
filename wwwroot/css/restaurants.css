@@ -1,8 +1,7 @@
 .category-hero {
   position: relative;
-  width: 100vw;             /* span the full viewport width */
-  margin-left: 50%;         /* cancel out Bootstrap’s container centering */
-  transform: translateX(-50%);
+  width: 100%;             /* span the full viewport width */
+  left: 0;         /* cancel out Bootstrap’s container centering */
   height: 55vh;             /* or a fixed px: e.g. 400px */
   background: center/cover no-repeat;
 }
@@ -48,9 +47,8 @@
 /* — full-width hero — */
 .restaurant-hero {
   position: relative;
-  width: 100vw;             /* span the full viewport width */
-  margin-left: 50%;         /* cancel out Bootstrap’s container centering */
-  transform: translateX(-50%);
+  width: 100%;             /* span the full viewport width */
+  left: 0;         /* cancel out Bootstrap’s container centering */
   height: 55vh;             /* or a fixed px: e.g. 400px */
   background: center/cover no-repeat;
 }
