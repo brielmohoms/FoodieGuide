@@ -241,8 +241,11 @@
               alt="@occasionName" />
 
             <div class="card-body">      
-              <h2 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold"; 
-              text-align:center;">@occasionName</h2>
+              <h2 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold; text-align:center;">
+  <a href="@item.Url()" class="text-decoration-none text-dark">
+    @occasionName
+  </a>
+</h2>
 
               @if (occasionEvents.Any())
               {
