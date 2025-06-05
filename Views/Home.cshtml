@@ -184,52 +184,52 @@
     <section id="featured" class="bg-light py-5 w-100">
       <div class="container">
         <h2 class="text-center mb-4">Restaurant of the Week</h2>
-          @if (selected != null)
-          {
-            var imageUrl     = selected.Value<IPublishedContent>("image")?.Url();
-            var name         = selected.Value<string>("restaurantName") ?? selected.Name;
-            var description  = selected.Value<string>("description") ?? "";
-            var categoryArr  = selected.Value<string[]>("category") ?? Array.Empty<string>();
-            var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
-            var ratingValue  = selected.Value<int?>("rating") ?? 0;
-              var restaurantUrl = selected.Url();
+        @if (selected != null)
+        {
+          var imageUrl     = selected.Value<IPublishedContent>("image")?.Url();
+          var name         = selected.Value<string>("restaurantName") ?? selected.Name;
+          var description  = selected.Value<string>("description") ?? "";
+          var categoryArr  = selected.Value<string[]>("category") ?? Array.Empty<string>();
+          var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
+          var ratingValue  = selected.Value<int?>("rating") ?? 0;
+          var restaurantUrl = selected.Url();
 
-<a href="@restaurantUrl" class="text-decoration-none text-dark">
-        <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
-          <!-- LEFT: image -->
-          <div class="card-img-left flex-shrink-0">
-            <img src="@imageUrl"
-                 alt="@name"
-                 class="h-100 w-100 object-fit-cover" />
-          </div>
+          <a href="@restaurantUrl" class="text-decoration-none text-dark">
+            <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
+              <!-- LEFT: image -->
+              <div class="card-img-left flex-shrink-0">
+                <img src="@imageUrl"
+                    alt="@name"
+                    class="h-100 w-100 object-fit-cover" />
+              </div>
 
-          <!-- RIGHT: content -->
-          <div class="card-body flex-grow-1 p-4 bg-white rounded-end">
-            <h3 class="h4 mb-2">@name</h3>
-            <p class="text-muted mb-2">@description</p>
+              <!-- RIGHT: content -->
+              <div class="card-body flex-grow-1 p-4 bg-white rounded-end text-start">
+                <h3 class="h3 mb-2">@name</h3>
+                <p class="text-muted mb-2">@description</p>
 
-            <div class="mb-2"><strong>Category:</strong> @categoryText</div>
+                <div class="mb-2"><strong>Category:</strong> @categoryText</div>
 
-            <div class="rating">
-              @for (int star = 1; star <= 5; star++)
-              {
-                  var starCss = star <= ratingValue ? "bi-star-fill" : "bi-star";
-                  <i class="bi @starCss" style="color: #3b5998;"></i>
-              }
+                <div class="rating">
+                  @for (int star = 1; star <= 5; star++)
+                  {
+                      var starCss = star <= ratingValue ? "bi-star-fill" : "bi-star";
+                      <i class="bi @starCss" style="color: #3b5998;"></i>
+                  }
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-</a>
-}
-      </div>
-    </section>
+          </a>
+        }
+    </div>
+  </section>
 
 
  <section id="occasion" class="celebrate-section py-5">
   <div class="container">
     <h2 class="text-center mb-4">Celebrating Something Special?</h2>
 
-    <div class="row justify-content-center gx-4 gy-4">
+    <div class="row justify-content-center">
       @foreach(var item in occasionItems)
       {
         var occasionImage        = item.Value<IPublishedContent>("occasionImage")?.Url();
@@ -244,31 +244,29 @@
               style="height:200px; object-fit:cover;"
               alt="@occasionName" />
 
-            <div class="card-body">      
-              <h2 class="card-title text-center mb-3 text-nowrap" style="font-weight:bold; text-align:center;">
-  <a href="@item.Url()" class="text-decoration-none text-dark">
-    @occasionName
-  </a>
-</h2>
+            <div class="card-body d-flex flex-column align-items-center text-center w-100">
+                <h2 class="card-title mb-3 fw-bold w-100">
+                    <a href="@item.Url()" class="text-decoration-none text-dark">@occasionName</a>
+                </h2>
 
-              @if (occasionEvents.Any())
-              {
-                <ul class="list-unstyled mt-2 mb-0 text-start text-nowrap">
-                  @foreach(var ev in occasionEvents)
-                  {
-                    var parts = ev.Split(new[] { '–' }, 2);
-                    var title = parts[0].Trim();
-                    var description = parts.Length > 1 ? parts[1].Trim() : "";
-                    <li>
-                      <h3>@title</h3>
-                      <br>
-                      @if(!string.IsNullOrWhiteSpace(description)) { @($" {description}") }
-                      <br>
-                      <br>
-                    </li>
-                  }
-                </ul>
-              }
+                @if (occasionEvents.Any())
+                {
+                    <ul class="list-unstyled mt-2 mb-0 w-100 text-center">
+                    @foreach (var ev in occasionEvents)
+                    {
+                        var parts = ev.Split(new[] { '–' }, 2);
+                        var title = parts[0].Trim();
+                        var description = parts.Length > 1 ? parts[1].Trim() : "";
+
+                        <li class="mb-3 w-100">
+                        <h3 class="h5 fw-semibold mb-1">@title</h3>
+                        @if (!string.IsNullOrWhiteSpace(description)) {
+                            <div class="text-muted">@description</div>
+                        }
+                        </li>
+                    }
+                    </ul>
+                }
             </div>
           </div>
         </div>

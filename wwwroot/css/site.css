@@ -12,6 +12,7 @@ body {
 }
 
 
+
 /* === Base Pill Style === */
 .category-item a {
   --size: 60px;                       /* pill width */
@@ -137,3 +138,17 @@ section#featured {
   color: #000 !important;
 }
 
+.card-body {
+  width: 100%;
+  text-align: center;
+}
+
+.card-body ul {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.card-body li {
+  width: 100%;
+  text-align: center;
+}
