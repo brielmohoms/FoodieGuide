@@ -12,3 +12,14 @@
     background: #3b5998;           
     margin: .25rem auto 0;
 }
+
+/* ───────────────── item dividers under each field ───────────────── */
+.item-divider {
+  width: 400px;               /* short stroke ─ tweak as you like */
+  height: 1px;
+  margin: 0.25rem auto 0.25;       /* 1.5rem above & below, auto-centers */
+  background-color: #3b5998; /* brand blue */
+  border: none;              /* remove default <hr> styling */
+  padding: 0;
+}
+
