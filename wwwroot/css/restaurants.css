@@ -110,3 +110,14 @@
   margin-bottom: 0.75rem;
 }
 
+.fixed-img-size {
+  width: 100%;
+  height: 180px; /* fixed height */
+  object-fit: cover; /* crop/scale image to fit without distortion */
+}
+
+.fixed-card-body {
+  height: 180px; /* same height as image or adjust as needed */
+}
+
+

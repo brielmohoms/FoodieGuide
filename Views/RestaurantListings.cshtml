@@ -3,156 +3,150 @@
 @using Umbraco.Extensions
 @using System.Text.RegularExpressions
 
-
-
 @{
     Layout = "master.cshtml";
 
     var current = Model;  
 
     var restaurantListings = Umbraco.ContentAtRoot()
-      .First(x => x.ContentType.Alias == "restaurantListings");
+        .First(x => x.ContentType.Alias == "restaurantListings");
 
     var restaurants = restaurantListings.DescendantsOfType("restaurantPage")
-      .ToArray();
-
-    var searchTerm = (Context.Request
-                            .Query["searchTerm"]
-                            .FirstOrDefault() ?? "")
-                            .Trim();
-    
-    var nameHits = restaurants
-        .Where(r => 
-            (r.Value<string>("restaurantName") ?? "")
-               .Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
         .ToArray();
 
-     var itemsToRender = string.IsNullOrWhiteSpace(searchTerm)
-       ? restaurants
-       : nameHits;
+    var searchTerm = (Context.Request.Query["searchTerm"].FirstOrDefault() ?? "").Trim();
+
+    var itemsToRender = string.IsNullOrWhiteSpace(searchTerm)
+        ? restaurants
+        : restaurants.Where(r =>
+            // Match restaurant name
+            (r.Value<string>("restaurantName") ?? "")
+                .Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+            ||
+            // Match category name
+            (r.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>())
+                .Any(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            ||
+            // Match occasion/tags (replace "occasion" with actual alias if needed)
+            (r.Value<IEnumerable<IPublishedContent>>("occasion") ?? Enumerable.Empty<IPublishedContent>())
+                .Any(o => o.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        ).ToArray();
 
     var byCategory = itemsToRender
         .SelectMany(r => r.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>(),
                     (r, cat) => new { Restaurant = r, Category = cat })
         .GroupBy(x => x.Category.Name)
         .ToArray();
-
-
 }
 
 <section class="container my-5">
-    <h1 class="text-center">Restaurants</h1>
+    <h1 class="text-center">
+        @(!string.IsNullOrWhiteSpace(searchTerm) ? "Search results for: " + searchTerm : "Restaurants")
+    </h1>
 
     @if (!byCategory.Any())
     {
-        <div class="no-results" style="margin:2rem 0; padding:1rem; border:1px solid #3b5998;">
+       <div class="no-results" style="margin:2rem 0; padding:1rem; text-align:center;">
             <p>No restaurants found for “<strong>@searchTerm</strong>”.</p>
-            <p><a href="@restaurantListings.Url()">← View all restaurants</a></p>
+            <p><a href="@restaurantListings.Url()" style="color: #3b5998; text-decoration: none;">← View all restaurants</a></p>
         </div>
     }
 
     @foreach (var grp in byCategory)
     {
-    var cat = grp.First().Category;
-    var catName = cat?.Name ?? "Uncategorized";
-    var carouselId = $"carousel-{catName.Replace(" ", "").ToLower()}";
+        var cat = grp.First().Category;
+        var catName = cat?.Name ?? "Uncategorized";
+        var carouselId = $"carousel-{catName.Replace(" ", "").ToLower()}";
 
-    <section class="my-5">
-        <h3 class="mb-2">@catName</h3>
+        <section class="my-5">
+            <h3 class="mb-2">@catName</h3>
 
-        <div id="@carouselId"
-             class="carousel slide"
-             data-bs-ride="carousel"
-             data-bs-interval="4500">
+            <div id="@carouselId"
+                 class="carousel slide"
+                 data-bs-ride="carousel"
+                 data-bs-interval="4500">
 
-            <div class="carousel-inner">
-                @{
-                    int itemsPerSlide = 3;
-                    var total = grp.Count();
-                    int slideIndex = 0;
+                <div class="carousel-inner">
+                    @{
+                        int itemsPerSlide = 3;
+                        var total = grp.Count();
+                        int slideIndex = 0;
 
-                    while (slideIndex < total)
-                    {
-                        var items = grp.Skip(slideIndex).Take(itemsPerSlide).ToList();
-                        var isActive = (slideIndex == 0) ? "active" : "";
+                        while (slideIndex < total)
+                        {
+                            var items = grp.Skip(slideIndex).Take(itemsPerSlide).ToList();
+                            var isActive = (slideIndex == 0) ? "active" : "";
 
-                        <div class="carousel-item @isActive">
-                            <div class="d-flex justify-content-center gap-5 px-5">
-                                @foreach (var entry in items)
-                                {
-                                    var page = entry.Restaurant;
-                                    var name = page.Value<string>("restaurantName");
-                                    var desc = page.Value<string>("description");
-                                    var img = page.Value<IPublishedContent>("image")?.Url();
-                                    var url = page.Url();
+                            <div class="carousel-item @isActive">
+                                <div class="d-flex justify-content-center gap-5 px-5">
+                                    @foreach (var entry in items)
+                                    {
+                                        var page = entry.Restaurant;
+                                        var name = page.Value<string>("restaurantName");
+                                        var desc = page.Value<string>("description");
+                                        var img = page.Value<IPublishedContent>("image")?.Url();
+                                        var url = page.Url();
 
-                                    <div class="card" style="width: 18rem;">
-                                        <img src="@img" class="card-img-top" alt="@name" />
-                                        <div class="card-body d-flex flex-column align-items-center text-center w-100">
-                                            <h5 class="card-title">@name</h5>
-                                            <p class="card-text flex-fill">@desc</p>
-                                            <a href="@url" class="btn btn-primary mt-2" style="background-color: #3b5998; border: 2px solid #3b5998">View →</a>
+                                        <div class="card" style="width: 18rem;">
+                                            <img src="@img" alt="@name" 
+                                                style="width: 100%; height: 180px; object-fit: cover;" />
+                                            <div style="height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                                <h5 class="card-title">@name</h5>
+                                                <p class="card-text">@desc</p>
+                                                <a href="@url" 
+                                                style="background-color: #3b5998; border: 2px solid #3b5998; color: white; padding: 0.375rem 0.75rem; text-decoration: none; border-radius: 0.25rem; margin-top: 0.5rem; display: inline-block;">
+                                                View →
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
-                                }
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        slideIndex += itemsPerSlide;
+                            slideIndex += itemsPerSlide;
+                        }
                     }
+                </div>
+
+                @if (grp.Count() > itemsPerSlide)
+                {
+                    <button class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#@carouselId"
+                        data-bs-slide="next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6.646 14.354a.5.5 0 0 1-.708-.708L11.293 8 5.938 2.354a.5.5 0 1 1 .707-.708l5.647 5.647a.5.5 0 0 1 0 .708l-5.646 5.647z"/>
+                        </svg>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+
+                    <button class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#@carouselId"
+                        data-bs-slide="prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M9.354 1.646a.5.5 0 0 1 0 .708L3.707 8l5.647 5.646a.5.5 0 0 1-.708.708L2.646 8.354a.5.5 0 0 1 0-.708L8.646 1.646a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
                 }
             </div>
-
-            @if (grp.Count() > itemsPerSlide)
-            {
-                <button class="carousel-control-next"
-                    type="button"
-                    data-bs-target="#@carouselId"
-                    data-bs-slide="next">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M6.646 14.354a.5.5 0 0 1-.708-.708L11.293 8 5.938 2.354a.5.5 0 1 1 .707-.708l5.647 5.647a.5.5 0 0 1 0 .708l-5.646 5.647z"/>
-                    </svg>
-                    <span class="visually-hidden">Next</span>
-                </button>
-
- 
-                <button class="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#@carouselId"
-                    data-bs-slide="prev">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b5998" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M9.354 1.646a.5.5 0 0 1 0 .708L3.707 8l5.647 5.646a.5.5 0 0 1-.708.708L2.646 8.354a.5.5 0 0 1 0-.708L8.646 1.646a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-            }
-        </div>
-    </section>
-}
-
+        </section>
+    }
+</section>
 
 @section Scripts {
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // If we have a searchTerm in the URL, clear it and the input box:
+    document.addEventListener("DOMContentLoaded", function () {
       const params = new URLSearchParams(window.location.search);
       if (params.has("searchTerm")) {
-        // 1) Clear the input value:
         const input = document.querySelector('input[name="searchTerm"]');
         if (input) input.value = "";
-
-        // 2) Remove the param from the URL without reloading:
         params.delete("searchTerm");
         const newQuery = params.toString();
-        const newUrl =
-          window.location.origin +
-          window.location.pathname +
-          (newQuery ? "?" + newQuery : "");
+        const newUrl = window.location.origin + window.location.pathname + (newQuery ? "?" + newQuery : "");
         window.history.replaceState({}, "", newUrl);
       }
     });
   </script>
 }
-
-
-
