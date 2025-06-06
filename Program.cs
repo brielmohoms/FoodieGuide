@@ -13,6 +13,8 @@ builder.Services
     .AddComposers()   // only if you have IComposer implementations
     .Build();         // <-- returns void, so no var here
 
+// Program.cs  (or a composer if you prefer)
+
 // 2) Build the WebApplication
 var app = builder.Build();
 

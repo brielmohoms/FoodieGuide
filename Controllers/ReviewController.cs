@@ -7,6 +7,10 @@ using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Logging;
+using Umbraco.Cms.Web.Common.Attributes;      
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Web.Common.Filters;
 
 namespace FoodieGuide.Web.Controllers
 {
@@ -43,6 +47,7 @@ namespace FoodieGuide.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [UmbracoMemberAuthorize]
         public IActionResult SubmitReview(
             [FromForm] int restaurantId,
             [FromForm] string name,
