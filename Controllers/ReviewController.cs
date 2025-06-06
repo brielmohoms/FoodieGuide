@@ -14,6 +14,8 @@ namespace FoodieGuide.Web.Controllers
     {
         private readonly IContentService _contentService;
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+        private readonly IPublishedUrlProvider _urlProvider;
+        private readonly ILogger<ReviewController> _logger;
 
         public ReviewController(
             IUmbracoContextAccessor umbracoContextAccessor,
@@ -22,7 +24,8 @@ namespace FoodieGuide.Web.Controllers
             AppCaches appCaches,
             IProfilingLogger profilingLogger,
             IPublishedUrlProvider publishedUrlProvider,
-            IContentService contentService
+            IContentService contentService,
+            ILogger<ReviewController> logger
         ) : base(
                 umbracoContextAccessor,
                 databaseFactory,
@@ -34,11 +37,17 @@ namespace FoodieGuide.Web.Controllers
         {
             _contentService = contentService;
             _umbracoContextAccessor = umbracoContextAccessor;
+            _urlProvider = publishedUrlProvider;
+            _logger = logger;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitReview(int restaurantId, string name, int rating, string comment)
+        public IActionResult SubmitReview(
+            [FromForm] int restaurantId,
+            [FromForm] string name,
+            [FromForm] int rating,
+            [FromForm] string comment)
         {
             var review = _contentService.Create(name, restaurantId, "reviews");
 
@@ -47,9 +56,11 @@ namespace FoodieGuide.Web.Controllers
             review.SetValue("comment", comment);
             review.SetValue("date", DateTime.Now);
 
-            _contentService.SaveAndPublish(review);
+            _contentService.Save(review);
 
-            return RedirectToCurrentUmbracoPage();
+            var publishResult = _contentService.Publish(review, new[] { "*" });
+
+            return Redirect(_urlProvider.GetUrl(restaurantId));
         }
     }
 }

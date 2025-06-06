@@ -17,8 +17,7 @@
     var phone = Model.Value<string>("phone");
     var websiteUrl = Model.Value<string>("websiteUrl");
 
-    var reviews = Model.Value<BlockListModel>("reviews")
-    ?? Enumerable.Empty<BlockListItem>();
+    var reviews = Model.ChildrenOfType("reviews");
 
     var blocks = reviews?.OfType<BlockListItem>() ?? Enumerable.Empty<BlockListItem>();
 
@@ -117,9 +116,8 @@
                 else
                 {
                     <div class="row gy-4">
-                        @foreach (var block in reviews)
+                        @foreach (var r in reviews)
                         {
-                            var r = block.Content!;
                             var reviewer = r.Value<string>("reviewerName");
                             var date = r.Value<DateTime>("date");
                             var reviewRating = r.Value<int>("reviewRating");
@@ -154,56 +152,17 @@
     </div>
 </section>
 
-<section id="reviews-list">
-    <h2>Customer Reviews</h2>
-
-    @{
-        // Fetch all child nodes (Reviews) under this Restaurant
-        var allReviews = Model.ChildrenOfType("reviews");
-    }
-
-    @if (allReviews.Any())
-    {
-        <ul class="reviews">
-            @foreach (var review in allReviews)
-            {
-                var rName = review.Value<string>("reviewerName");
-                var rRating = review.Value<int>("reviewRating");
-                var rComment = review.Value<string>("comment");
-                var rDate = review.Value<DateTime>("date");
-
-                <li class="single-review">
-                    <div class="review-header">
-                        <strong>@rName</strong> —
-                        <span>@rRating of 5</span> |
-                        <span>@rDate.ToString("dd.MM.yyyy")</span>
-                    </div>
-                    <div class="review-body">
-                        <p>@rComment</p>
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>No reviews yet. Be the first to leave feedback!</p>
-    }
-</section>
-
-
 <section id="write-review">
     <h2>Write a Review</h2>
 
-    @using (Html.BeginUmbracoForm("SubmitReview", "Review", FormMethod.Post))
-    {
+    <form method="post" asp-controller="Review" asp-action="SubmitReview">
         @Html.AntiForgeryToken()
         <input type="hidden" name="restaurantId" value="@Model.Id" />
         <input type="text" name="name" />
-        <input type="number" name="rating" />
+        <input type="number" name="rating" min="1" max="5" />
         <textarea name="comment"></textarea>
         <button type="submit">Submit</button>
-    }
+    </form>
 
 </section>
 
