@@ -23,6 +23,8 @@ namespace FoodieGuide.Web.Controllers
 
         private readonly MediaFileManager _mediaFileManager;
 
+        private readonly ITwoFactorLoginService _twoFactor;
+
         public MembersSurfaceController(
             IUmbracoContextAccessor umbracoContextAccessor,
             IUmbracoDatabaseFactory databaseFactory,
@@ -33,7 +35,8 @@ namespace FoodieGuide.Web.Controllers
             IMemberService memberService,
             MediaFileManager mediaFileManager,
             IMemberManager memberManager,
-            IMemberSignInManager signInManager
+            IMemberSignInManager signInManager,
+            ITwoFactorLoginService twoFactor
         ) : base(umbracoContextAccessor, databaseFactory, serviceContext, appCaches,
         profilingLogger, publishedUrlProvider)
         {
@@ -41,6 +44,15 @@ namespace FoodieGuide.Web.Controllers
             _memberService = memberService;
             _memberManager = memberManager;
             _signInManager = signInManager;
+            _twoFactor = twoFactor;
+        }
+
+        [HttpGet]
+        [Route("register")]
+        public IActionResult Register()
+        {
+            var vm = new RegisterModel();
+            return View("RegisterPage", vm);
         }
 
         [HttpPost]
@@ -48,14 +60,18 @@ namespace FoodieGuide.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewData.Model = model;
                 return CurrentUmbracoPage();
+
             }
 
             if (await _memberManager.FindByEmailAsync(model.Email) != null
             || await _memberManager.FindByNameAsync(model.Username) != null)
             {
                 ModelState.AddModelError("", "Username or email already exists");
+                ViewData.Model = model;
                 return CurrentUmbracoPage();
+
             }
 
             var member = new MemberIdentityUser
@@ -63,14 +79,18 @@ namespace FoodieGuide.Web.Controllers
                 UserName = model.Username,
                 Name = model.Name,
                 Email = model.Email,
-                MemberTypeAlias = "Member"
+                MemberTypeAlias = "Member",
+                IsApproved      = true
             };
 
             var create = await _memberManager.CreateAsync(member, model.Password);
             if (!create.Succeeded)
             {
                 ModelState.AddModelError("", create.Errors.First().Description);
+
+                ViewData.Model = model;
                 return CurrentUmbracoPage();
+
             }
 
             TempData["RegistrationSuccess"] = "Your account has been created successfully. Please proceed to login.";
@@ -78,15 +98,23 @@ namespace FoodieGuide.Web.Controllers
             return Redirect("/login");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult HandleLogin(LoginModel model)
+        [HttpGet]
+        [Route("login")]
+        public IActionResult Login()
         {
-            if (!ModelState.IsValid)
-                return CurrentUmbracoPage();
+            var vm = new LoginModel();
+            return View("LoginPage", vm);
+        }
 
-            var result = _signInManager.PasswordSignInAsync(model.Username, model.Password,
-            false, false).Result;
+        [HttpPost("login")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HandleLogin(LoginModel model)
+        {
+            if (!ModelState.IsValid) return View("LoginPage", model);
+
+            var result = await _signInManager.PasswordSignInAsync(
+                             model.Username, model.Password,
+                             model.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
@@ -95,8 +123,9 @@ namespace FoodieGuide.Web.Controllers
             }
 
             ModelState.AddModelError("", "Invalid username or password");
-            return CurrentUmbracoPage();
+            return View("LoginPage", model);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

@@ -19,11 +19,9 @@
 
     var reviews = Model.ChildrenOfType("reviews");
 
-    var blocks = reviews?.OfType<BlockListItem>() ?? Enumerable.Empty<BlockListItem>();
-
     // pull each individual rating out
-    var scores = blocks
-    .Select(b => b.Content.Value<int>("reviewRating"))
+    var scores = reviews
+    .Select(b => b.Value<int>("reviewRating"))
     .ToList();
 
     // compute the average (as a double)
@@ -87,6 +85,37 @@
             <div class="col-md-6">
                 <h2>Description</h2>
                 <p>@description</p>
+                <br>
+
+                <h2>Write a Review</h2>
+                <div class="card mb-4 p-4" style="max-width: 600px;">
+
+                    <form method="post" asp-controller="Review" asp-action="SubmitReview">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="restaurantId" value="@Model.Id" />
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="name" class="form-label">Your Name</label>
+                                <input type="text" name="name" class="form-control" id="name" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="rating" class="form-label">Rating</label>
+                                <input type="number" name="rating" class="form-control" id="rating" min="1" max="5"
+                                    required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comment</label>
+                            <textarea name="comment" class="form-control" id="comment" rows="3" required></textarea>
+                        </div>
+
+                        <div class="text-start">
+                            <button type="submit" class="btn btn-primary" style="background-color: #3b5998; border: 2px solid #3b5998">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- REVIEWS COLUMN -->
@@ -150,20 +179,6 @@
             </div>
         </div>
     </div>
-</section>
-
-<section id="write-review">
-    <h2>Write a Review</h2>
-
-    <form method="post" asp-controller="Review" asp-action="SubmitReview">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="restaurantId" value="@Model.Id" />
-        <input type="text" name="name" />
-        <input type="number" name="rating" min="1" max="5" />
-        <textarea name="comment"></textarea>
-        <button type="submit">Submit</button>
-    </form>
-
 </section>
 
 <script>

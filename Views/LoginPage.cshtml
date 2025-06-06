@@ -1,15 +1,7 @@
-﻿@using Umbraco.Cms.Web.Common.Models
-@using Umbraco.Cms.Web.Common.Security
-@using Umbraco.Cms.Web.Website.Controllers
-@using Umbraco.Cms.Core.Services
-@using Umbraco.Extensions
-@inject IMemberExternalLoginProviders memberExternalLoginProviders
-@inject ITwoFactorLoginService twoFactorLoginService
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<FoodieGuide.Web.Models.LoginModel>
+@model FoodieGuide.Web.Models.LoginModel
 @{
   Layout = "master.cshtml";
-  var loginModel = new LoginModel();
-  
-  loginModel.RedirectUrl = "/";
 }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -20,15 +12,13 @@
 
 @if (ViewData.TryGetTwoFactorProviderNames(out var providerNames))
 {
-
   foreach (var providerName in providerNames)
   {
     <div class="2fa-form">
       <h4>Two factor with @providerName.</h4>
       <div asp-validation-summary="All" class="text-danger"></div>
-      @using (Html.BeginUmbracoForm<UmbTwoFactorLoginController>(nameof(UmbTwoFactorLoginController.Verify2FACode)))
+      @using (Html.BeginUmbracoForm("HandleLogin", "MembersSurface"))
       {
-
         <text>
           <input type="hidden" name="provider" value="@providerName" />
           Input security code: <input name="code" value="" /><br />
@@ -45,44 +35,41 @@ else
   <div class="d-flex justify-content-center align-items-start"
     style="min-height: 100vh; padding-top: 50px; background-color: #f9f9f9">
     <div class="card p-5 shadow rounded" style="width: 100%; max-width: 600px; background-color: white;">
-        <div class="login-form">
-          @using (Html.BeginUmbracoForm<UmbLoginController>(
-                  "HandleLogin", new { RedirectUrl = loginModel.RedirectUrl }))
-          {
+      <div class="login-form">
+        @using (Html.BeginUmbracoForm("HandleLogin", "MembersSurface"))
+      {
+          <h2 class="section-title text-center fw-bold">Login</h2>
+          @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
-            <h2 class="section-title text-center fw-bold">Login</h2>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          <div class="mb-3">
+            <label asp-for="Username" class="form-label"></label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="form-text text-danger"></span>
+          </div>
 
-            <div class="mb-3">
-              <label asp-for="@loginModel.Username" class="form-label"></label>
-              <input asp-for="@loginModel.Username" class="form-control" />
-              <span asp-validation-for="@loginModel.Username" class="form-text text-danger"></span>
-            </div>
+          <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="form-text text-danger"></span>
+          </div>
 
-            <div class="mb-3">
-              <label asp-for="@loginModel.Password" class="form-label"></label>
-              <input asp-for="@loginModel.Password" class="form-control" />
-              <span asp-validation-for="@loginModel.Password" class="form-text text-danger"></span>
-            </div>
+          <div class="mb-3 form-check">
+            <input asp-for="RememberMe" class="form-check-input" />
+            <label asp-for="RememberMe" class="form-check-label">
+              @Html.DisplayNameFor(m => m.RememberMe)
+            </label>
+          </div>
 
-            <div class="mb-3 form-check">
-              <input asp-for="@loginModel.RememberMe" class="form-check-input" />
-              <label asp-for="@loginModel.RememberMe" class="form-check-label">
-                @Html.DisplayNameFor(m => loginModel.RememberMe)
-              </label>
-            </div>
-
-            <div class="d-flex align-items-center gap-2 mt-2">
-              <button type="submit" class="btn btn-primary"
-                style="border-radius: 50px; background-color: #3b5998; color:white">Log in</button>
-              <span class="m-0">
-                Don’t have an account?
-                <a href="/register" style="color: #3b5998">Register</a>
-              </span>
-            </div>
-          }
-        </div>
+          <div class="d-flex align-items-center gap-2 mt-2">
+            <button type="submit" class="btn btn-primary"
+              style="border-radius: 50px; background-color: #3b5998; color:white">Log in</button>
+            <span class="m-0">
+              Don’t have an account?
+              <a href="/register" style="color: #3b5998">Register</a>
+            </span>
+          </div>
+        }
+      </div>
     </div>
-</div>
-
+  </div>
 }
