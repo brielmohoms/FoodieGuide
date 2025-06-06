@@ -35,7 +35,7 @@
             ||
             // Match category name
             (r.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>())
-                .Any(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .Any(c => c.Name.Equals(searchTerm, StringComparison.OrdinalIgnoreCase))
             ||
             // Match occasion/tags (replace "occasion" with actual alias if needed)
             (r.Value<IEnumerable<IPublishedContent>>("occasion") ?? Enumerable.Empty<IPublishedContent>())
