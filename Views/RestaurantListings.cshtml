@@ -16,6 +16,16 @@
 
     var searchTerm = (Context.Request.Query["searchTerm"].FirstOrDefault() ?? "").Trim();
 
+    // If exact match on restaurant name, redirect
+    var exactMatch = restaurants.FirstOrDefault(r =>
+        (r.Value<string>("restaurantName") ?? "").Equals(searchTerm, StringComparison.OrdinalIgnoreCase));
+
+    if (exactMatch != null)
+    {
+        Context.Response.Redirect(exactMatch.Url());
+        return;
+    }
+
     var itemsToRender = string.IsNullOrWhiteSpace(searchTerm)
         ? restaurants
         : restaurants.Where(r =>
