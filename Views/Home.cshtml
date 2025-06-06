@@ -141,88 +141,92 @@
     <h2 class="text-center mb-4">What are you in the mood for?</h2>
 
     <ul class="list-unstyled d-flex flex-wrap justify-content-center category-list">
-  @foreach (var c in cats)
-  {
-    var img = c.Value<IPublishedContent>("categoryImage")?.Url();
-
-    var iconMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    @foreach (var c in cats)
     {
-      { "Pizza & Pasta", "pizza" },
-      { "Asian", "soup" },
-      { "Indian", "cooking-pot" },
-      { "Burgers & Sandwiches", "hamburger" },
-      { "Mexican/Latin American", "bean" },
-      { "Seafood", "shrimp" },
-      { "Gluten-free", "wheat-off" },
-      { "Healthy Choices", "leafy-green" },
-      { "Vegan/Vegetarian", "vegan" },
-      { "Breakfast & Brunch", "egg-fried" },
-      { "Coffee Shops", "coffee" },
-      { "Bakeries", "croissant" },
-      { "Desserts & Sweets", "dessert" }
-    };
+      var img = c.Value<IPublishedContent>("categoryImage")?.Url();
 
-    var iconName = iconMap.ContainsKey(c.Name) ? iconMap[c.Name] : "circle"; // fallback for category icon
+      var iconMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+      {
+        { "Pizza & Pasta", "pizza" },
+        { "Asian", "soup" },
+        { "Indian", "cooking-pot" },
+        { "Burgers & Sandwiches", "hamburger" },
+        { "Mexican/Latin American", "bean" },
+        { "Seafood", "shrimp" },
+        { "Gluten-free", "wheat-off" },
+        { "Healthy Choices", "leafy-green" },
+        { "Vegan/Vegetarian", "vegan" },
+        { "Breakfast & Brunch", "egg-fried" },
+        { "Coffee Shops", "coffee" },
+        { "Bakeries", "croissant" },
+        { "Desserts & Sweets", "dessert" }
+      };
 
-    <li class="category-item mx-2">
-      <a href="@c.Url()" style="--bg:url('@img')" 
-         class="d-flex flex-column justify-content-between align-items-center">
-        <div class="category-icon">
-          <i data-lucide="@iconName"></i>
-        </div>
-        <div class="category-label">@c.Name</div>
-      </a>
-    </li>
+      var iconName = iconMap.ContainsKey(c.Name) ? iconMap[c.Name] : "circle"; // fallback for category icon
+
+      <li class="category-item mx-2">
+        <a href="@c.Url()" style="--bg:url('@img')" 
+          class="d-flex flex-column justify-content-between align-items-center">
+          <div class="category-icon">
+            <i data-lucide="@iconName"></i>
+          </div>
+          <div class="category-label">@c.Name</div>
+        </a>
+      </li>
   }
 </ul>
 </section>
 
-
-
 <!-- Full-width section with grey background and vertical spacing -->
-
-    <section id="featured" class="bg-light py-5 w-100">
-      <div class="container">
+<section id="featured" class="bg-light py-5 w-100">
+    <div class="container">
         <h2 class="text-center mb-4">Restaurant of the Week</h2>
         @if (selected != null)
         {
-          var imageUrl     = selected.Value<IPublishedContent>("image")?.Url();
-          var name         = selected.Value<string>("restaurantName") ?? selected.Name;
-          var description  = selected.Value<string>("description") ?? "";
-          var categoryArr  = selected.Value<string[]>("category") ?? Array.Empty<string>();
-          var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
-          var ratingValue  = selected.Value<int?>("rating") ?? 0;
-          var restaurantUrl = selected.Url();
+            var imageUrl     = selected.Value<IPublishedContent>("image")?.Url();
+            var name         = selected.Value<string>("restaurantName") ?? selected.Name;
+            var description  = selected.Value<string>("description") ?? "";
+            var categoryArr  = selected.Value<string[]>("category") ?? Array.Empty<string>();
+            var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
+            var ratingValue  = selected.Value<int?>("rating") ?? 0;
+            var restaurantUrl = selected.Url();
 
-          <a href="@restaurantUrl" class="text-decoration-none text-dark">
-            <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
-              <!-- LEFT: image -->
-              <div class="card-img-left flex-shrink-0">
-                <img src="@imageUrl"
-                    alt="@name"
-                    class="h-100 w-100 object-fit-cover" />
-              </div>
+            <a href="@restaurantUrl" class="text-decoration-none text-dark">
+                <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
+                    <!-- LEFT: image -->
+                    <div class="card-img-left flex-shrink-0">
+                        <img src="@imageUrl"
+                            alt="@name"
+                            class="h-100 w-100 object-fit-cover" />
+                    </div>
 
-              <!-- RIGHT: content -->
-              <div class="card-body flex-grow-1 p-4 bg-white rounded-end text-start">
-                <h3 class="h3 mb-2">@name</h3>
-                <p class="text-muted mb-2">@description</p>
+                    <!-- RIGHT: content -->
+                    <div class="card-body flex-grow-1 p-4 bg-white rounded-end text-start"
+                        style="display: flex; flex-direction: column;">
+                        
+                        <h3 class="h3 mb-3">@name</h3>
 
-                <div class="mb-2"><strong>Category:</strong> @categoryText</div>
+                        <p class="text-muted" style="margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                          @description
+                        </p>
 
-                <div class="rating">
-                  @for (int star = 1; star <= 5; star++)
-                  {
-                      var starCss = star <= ratingValue ? "bi-star-fill" : "bi-star";
-                      <i class="bi @starCss" style="color: #3b5998;"></i>
-                  }
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Category:</strong> @categoryText
+                        </div>
+
+                        <div class="rating">
+                            @for (int star = 1; star <= 5; star++)
+                            {
+                                var starCss = star <= ratingValue ? "bi-star-fill" : "bi-star";
+                                <i class="bi @starCss" style="color: #3b5998;"></i>
+                            }
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </a>
+            </a>
         }
     </div>
-  </section>
+</section>
 
 
  <section id="occasion" class="celebrate-section py-5">
