@@ -31,7 +31,7 @@
 
 <section class="py-5">
   <div class="container">
-    <h2 class="mb-4">Restaurants offering @catName</h2>
+    <h2 class="mb-4" style="text-align: center;">Restaurants offering @catName</h2>
     @if (!picks.Any())
     {
       <p class="text-muted">No restaurants found in this category.</p>
@@ -53,7 +53,7 @@
               <img src="@img" class="card-img-top" style="height:200px;object-fit:cover" />
               <div class="card-body d-flex flex-column align-items-center text-center w-100">
                 <h5 class="card-title fw-bold">@name</h5>
-                <p class="card-text text-muted">@desc</p>
+                <p class="card-text text-muted" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">@desc</p>
                 <div class="rating">
                   @for (int star = 1; star <= 5; star++)
                   {
