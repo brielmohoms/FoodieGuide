@@ -96,7 +96,20 @@
                                         var desc = page.Value<string>("description");
                                         var img = page.Value<IPublishedContent>("image")?.Url();
                                         var url = page.Url();
-                                        var rating = page.Value<int?>("rating") ?? 0;
+
+                                        var reviews = page.ChildrenOfType("reviews");
+
+          // pull each individual rating out
+          var scores = reviews
+          .Select(b => b.Value<int>("reviewRating"))
+          .ToList();
+
+          // compute the average (as a double)
+          var avg = scores.Any()
+          ? scores.Average()
+          : 0;
+
+          var displayStars = (int)Math.Round(avg);
 
                                         <div class="card text-center d-flex flex-column align-items-center" style="width: 18rem;">
                                             <img src="@img" class="card-img-top" alt="@name" style="height: 180px; object-fit: cover;" />
@@ -107,7 +120,7 @@
                                                     <div class="rating d-flex align-items-center">
                                                         @for (int star = 1; star <= 5; star++)
                                                         {
-                                                            var isFilled = star <= rating;
+                                                            var isFilled = star <= displayStars;
                                                             var starCss = isFilled ? "bi-star-fill" : "bi-star";
                                                             var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
                                                             var sizeStyle = "font-size: 0.85rem;"; // adjust size as needed

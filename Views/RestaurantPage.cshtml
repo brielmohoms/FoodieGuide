@@ -10,7 +10,6 @@
     var description = Model.Value<string>("description") ?? "";
     var imageUrl = Model.Value<IPublishedContent>("image")?.Url() ?? "";
     var categories = Model.Value<string[]>("category") ?? Array.Empty<string>();
-    //var rating = Model.Value<int?>("rating");
 
     var address = Model.Value<string>("address");
     var openingHours = Model.Value<string>("openingHours");
