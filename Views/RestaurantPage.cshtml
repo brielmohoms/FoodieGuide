@@ -89,7 +89,6 @@
 
                 <h2>Write a Review</h2>
                 <div class="card mb-4 p-4" style="max-width: 600px;">
-
                     <form method="post" asp-controller="Review" asp-action="SubmitReview">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="restaurantId" value="@Model.Id" />
@@ -112,7 +111,8 @@
                         </div>
 
                         <div class="text-start">
-                            <button type="submit" class="btn btn-primary" style="background-color: #3b5998; border: 2px solid #3b5998">Submit</button>
+                            <button type="submit" id="submitReviewBtn" class="btn btn-primary"
+                                style="background-color: #3b5998; border: 2px solid #3b5998">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -193,3 +193,4 @@
         });
     });
 </script>
+
