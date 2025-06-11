@@ -18,17 +18,14 @@
 
     var reviews = Model.ChildrenOfType("reviews");
 
-    // pull each individual rating out
     var scores = reviews
     .Select(b => b.Value<int>("reviewRating"))
     .ToList();
 
-    // compute the average (as a double)
     var avg = scores.Any()
     ? scores.Average()
     : 0;
 
-    // for simple 1–5 star UI we'll round to nearest integer
     var avgInt = (int)Math.Round(avg);
 }
 
@@ -158,7 +155,6 @@
                                         <small class="text-muted">@date.ToString("MMM d, yyyy")</small>
                                     </div>
                                     <div class="mb-2">
-                                        @* render stars *@
                                         @for (int i = 0; i < reviewRating; i++)
                                         {
                                             <i class="bi bi-star-fill" style="color: #3b5998;"></i>
@@ -181,10 +177,7 @@
 </section>
 
 <script>
-    // when the DOM is ready
     document.addEventListener("DOMContentLoaded", function () {
-
-        // give the browser one tick to register the starting state
         requestAnimationFrame(function () {
             document
                 .querySelector(".restaurant-hero .hero-content")

@@ -11,12 +11,10 @@
 
   var bgImage = current.Value<IPublishedContent>("categoryImage")?.Url();
 
-  // grab *all* restaurantPage items under every root node
   var allRestaurants = Umbraco
   .ContentAtRoot()
   .DescendantsOrSelfOfType("restaurantPage");
 
-  // filter to only those whose "category" picker contains the name of this category node
   var picks = allRestaurants
   .Where(r => r.Value<IEnumerable<IPublishedContent>>("category")
   ?.Any(c => c.Id == current.Id) == true);
@@ -48,17 +46,14 @@
 
           var reviews = r.ChildrenOfType("reviews");
 
-          // pull each individual rating out
           var scores = reviews
           .Select(b => b.Value<int>("reviewRating"))
           .ToList();
 
-          // compute the average (as a double)
           var avg = scores.Any()
           ? scores.Average()
           : 0;
 
-          // for simple 1–5 star UI we'll round to nearest integer
           var displayStars = (int)Math.Round(avg);
 
           <div class="col-12 col-md-6 col-lg-4">
@@ -95,10 +90,7 @@
 </section>
 
 <script>
-  // when the DOM is ready
   document.addEventListener("DOMContentLoaded", function () {
-
-    // give the browser one tick to register the starting state
     requestAnimationFrame(function () {
       document
         .querySelector(".category-hero .hero-content")

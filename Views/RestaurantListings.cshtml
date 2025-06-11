@@ -16,7 +16,6 @@
 
     var searchTerm = (Context.Request.Query["searchTerm"].FirstOrDefault() ?? "").Trim();
 
-    // If exact match on restaurant name, redirect
     var exactMatch = restaurants.FirstOrDefault(r =>
         (r.Value<string>("restaurantName") ?? "").Equals(searchTerm, StringComparison.OrdinalIgnoreCase));
 
@@ -29,15 +28,14 @@
     var itemsToRender = string.IsNullOrWhiteSpace(searchTerm)
         ? restaurants
         : restaurants.Where(r =>
-            // Match restaurant name
             (r.Value<string>("restaurantName") ?? "")
                 .Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
             ||
-            // Match category name
+            
             (r.Value<IEnumerable<IPublishedContent>>("category") ?? Enumerable.Empty<IPublishedContent>())
             .Any(c => c.Name.Equals(searchTerm, StringComparison.OrdinalIgnoreCase))
             ||
-            // Match occasion/tags (replace "occasion" with actual alias if needed)
+            
             (r.Value<IEnumerable<IPublishedContent>>("occasion") ?? Enumerable.Empty<IPublishedContent>())
                 .Any(o => o.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
         ).ToArray();
@@ -98,18 +96,9 @@
                                         var url = page.Url();
 
                                         var reviews = page.ChildrenOfType("reviews");
-
-          // pull each individual rating out
-          var scores = reviews
-          .Select(b => b.Value<int>("reviewRating"))
-          .ToList();
-
-          // compute the average (as a double)
-          var avg = scores.Any()
-          ? scores.Average()
-          : 0;
-
-          var displayStars = (int)Math.Round(avg);
+                                        var scores = reviews.Select(b => b.Value<int>("reviewRating")).ToList();
+                                        var avg = scores.Any()? scores.Average(): 0;
+                                        var displayStars = (int)Math.Round(avg);
 
                                         <div class="card text-center d-flex flex-column align-items-center" style="width: 18rem;">
                                             <img src="@img" class="card-img-top" alt="@name" style="height: 180px; object-fit: cover;" />
@@ -123,7 +112,7 @@
                                                             var isFilled = star <= displayStars;
                                                             var starCss = isFilled ? "bi-star-fill" : "bi-star";
                                                             var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
-                                                            var sizeStyle = "font-size: 0.85rem;"; // adjust size as needed
+                                                            var sizeStyle = "font-size: 0.85rem;";
 
                                                             <i class="bi @starCss" style="@($"{colorStyle} {sizeStyle}")"></i>
                                                         }
@@ -144,7 +133,6 @@
                                     }
                                 </div>
                             </div>
-
                             slideIndex += itemsPerSlide;
                         }
                     }

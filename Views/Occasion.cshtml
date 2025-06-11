@@ -28,7 +28,6 @@
         var title = occasion.Name;
         var occasionId = occasion.Id;
 
-        // Filter restaurants tagged with this occasion
         var matchedRestaurants = allRestaurants
             .Where(r =>
                 (r.Value<IEnumerable<IPublishedContent>>("occasions") ?? Enumerable.Empty<IPublishedContent>())
