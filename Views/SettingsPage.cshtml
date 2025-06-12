@@ -48,8 +48,8 @@
                 @Html.LabelFor(m => m.Bio)
                 @Html.TextAreaFor(
                                 m => m.Bio,
-                                4, /* rows */
-                                60, /* cols (ignored by Bootstrap but keeps HTML valid) */
+                                4, 
+                                60,
                                 new { @class = "form-control", placeholder = "Tell us a bit about yourself…" })
                 @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger" })
             </div>

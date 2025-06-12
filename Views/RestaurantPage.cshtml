@@ -10,7 +10,6 @@
     var description = Model.Value<string>("description") ?? "";
     var imageUrl = Model.Value<IPublishedContent>("image")?.Url() ?? "";
     var categories = Model.Value<string[]>("category") ?? Array.Empty<string>();
-    //var rating = Model.Value<int?>("rating");
 
     var address = Model.Value<string>("address");
     var openingHours = Model.Value<string>("openingHours");
@@ -19,17 +18,14 @@
 
     var reviews = Model.ChildrenOfType("reviews");
 
-    // pull each individual rating out
     var scores = reviews
     .Select(b => b.Value<int>("reviewRating"))
     .ToList();
 
-    // compute the average (as a double)
     var avg = scores.Any()
     ? scores.Average()
     : 0;
 
-    // for simple 1–5 star UI we'll round to nearest integer
     var avgInt = (int)Math.Round(avg);
 }
 
@@ -89,7 +85,6 @@
 
                 <h2>Write a Review</h2>
                 <div class="card mb-4 p-4" style="max-width: 600px;">
-
                     <form method="post" asp-controller="Review" asp-action="SubmitReview">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="restaurantId" value="@Model.Id" />
@@ -112,7 +107,8 @@
                         </div>
 
                         <div class="text-start">
-                            <button type="submit" class="btn btn-primary" style="background-color: #3b5998; border: 2px solid #3b5998">Submit</button>
+                            <button type="submit" id="submitReviewBtn" class="btn btn-primary"
+                                style="background-color: #3b5998; border: 2px solid #3b5998">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -159,7 +155,6 @@
                                         <small class="text-muted">@date.ToString("MMM d, yyyy")</small>
                                     </div>
                                     <div class="mb-2">
-                                        @* render stars *@
                                         @for (int i = 0; i < reviewRating; i++)
                                         {
                                             <i class="bi bi-star-fill" style="color: #3b5998;"></i>
@@ -182,10 +177,7 @@
 </section>
 
 <script>
-    // when the DOM is ready
     document.addEventListener("DOMContentLoaded", function () {
-
-        // give the browser one tick to register the starting state
         requestAnimationFrame(function () {
             document
                 .querySelector(".restaurant-hero .hero-content")
@@ -193,3 +185,4 @@
         });
     });
 </script>
+

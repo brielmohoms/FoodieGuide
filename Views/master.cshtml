@@ -21,7 +21,6 @@
   <link rel="stylesheet" href="/css/weeklyRestaurant.css" />
   <link rel="stylesheet" href="/css/stayUpdated.css" />
   <link rel="stylesheet" href="/css/restaurants.css" />
-  <link rel="stylesheet" href="/css/loginAndRegister.css" />
   <link rel="stylesheet" href="/css/accountAndSettings.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
@@ -54,6 +53,14 @@
   {
     <div class="alert alert-success text-center mb-4">
       @TempData["SettingsSaved"]
+    </div>
+  }
+
+  @if (TempData["LoginMessage"] != null)
+  {
+    <div class="alert alert-warning text-center mb-4">
+      @TempData["LoginMessage"]
+
     </div>
   }
 
@@ -164,11 +171,11 @@
       else
       {
         <a href="/login" class="btn d-flex align-items-center justify-content-center" type="submit" style="
-                      background-color: #3b5998;
-                      color: white;
-                      width: 80px;
-                      height: 40px;  
-                      border-radius: 50px;" aria-label="Login"> Login
+                        background-color: #3b5998;
+                        color: white;
+                        width: 80px;
+                        height: 40px;  
+                        border-radius: 50px;" aria-label="Login"> Login
         </a>
       }
     </div>
@@ -185,13 +192,13 @@
   <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>
-  lucide.createIcons({
-  attrs: {
-    stroke: '#000',
-    fill: 'none'
-  }
-});
-</script>
+    lucide.createIcons({
+      attrs: {
+        stroke: '#000',
+        fill: 'none'
+      }
+    });
+  </script>
 </body>
 
 </html>

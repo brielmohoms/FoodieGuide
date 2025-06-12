@@ -9,7 +9,7 @@
     if (!string.IsNullOrWhiteSpace(query))
     {
         results = Umbraco.ContentAtRoot()
-            .DescendantsOrSelfOfType("restaurant") // Your document type alias
+            .DescendantsOrSelfOfType("restaurant")
             .Where(x => x.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
     }
 }

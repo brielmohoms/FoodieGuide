@@ -7,10 +7,11 @@ using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Logging;
-using Umbraco.Cms.Web.Common.Attributes;      
+using Umbraco.Cms.Web.Common.Attributes;
 using Microsoft.AspNetCore.Authorization;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Web.Common.Filters;
+using Umbraco.Cms.Core.Models;
 
 namespace FoodieGuide.Web.Controllers
 {
@@ -47,13 +48,19 @@ namespace FoodieGuide.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [UmbracoMemberAuthorize]
         public IActionResult SubmitReview(
             [FromForm] int restaurantId,
             [FromForm] string name,
             [FromForm] int rating,
             [FromForm] string comment)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                TempData["LoginMessage"] = "You must log in or register to submit a review.";
+
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+
             var review = _contentService.Create(name, restaurantId, "reviews");
 
             review.SetValue("reviewerName", name);

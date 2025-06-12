@@ -4,26 +4,25 @@
 @{
   Layout = "master.cshtml";
 
-  var current    = Model; 
+  var current = Model;
 
-  var catName    = current.Value<string>("categoryName") ?? current.Name;
-  var catDesc    = current.Value("categoryDescription");
+  var catName = current.Value<string>("categoryName") ?? current.Name;
+  var catDesc = current.Value("categoryDescription");
 
-  var bgImage    = current.Value<IPublishedContent>("categoryImage")?.Url();
-	
-  // grab *all* restaurantPage items under every root node
-    var allRestaurants = Umbraco
-      .ContentAtRoot()
-      .DescendantsOrSelfOfType("restaurantPage");
+  var bgImage = current.Value<IPublishedContent>("categoryImage")?.Url();
 
-    // filter to only those whose "category" picker contains the name of this category node
-    var picks = allRestaurants
-      .Where(r => r.Value<IEnumerable<IPublishedContent>>("category")
-                    ?.Any(c => c.Id == current.Id) == true);
+  var allRestaurants = Umbraco
+  .ContentAtRoot()
+  .DescendantsOrSelfOfType("restaurantPage");
+
+  var picks = allRestaurants
+  .Where(r => r.Value<IEnumerable<IPublishedContent>>("category")
+  ?.Any(c => c.Id == current.Id) == true);
 }
 
-<section class="category-hero" style="background-image:url('@bgImage');>
-  <div class="hero-overlay"></div>
+<section class="category-hero" style="background-image:url('@bgImage');">
+  <div class=" hero-overlay">
+  </div>
   <div class="hero-content text-center text-white">
     <h1>@catName</h1>
   </div>
@@ -39,33 +38,49 @@
     else
     {
       <div class="row gx-4 gy-4">
-        @foreach(var r in picks)
+        @foreach (var r in picks)
         {
           var img = r.Value<IPublishedContent>("image")?.Url();
           var name = r.Value<string>("restaurantName");
           var desc = r.Value<string>("description");
-          var rating = r.Value<int?>("rating") ?? 0;
+
+          var reviews = r.ChildrenOfType("reviews");
+
+          var scores = reviews
+          .Select(b => b.Value<int>("reviewRating"))
+          .ToList();
+
+          var avg = scores.Any()
+          ? scores.Average()
+          : 0;
+
+          var displayStars = (int)Math.Round(avg);
 
           <div class="col-12 col-md-6 col-lg-4">
-            <a href="@r.Url()" class="d-block text-reset text-decoration-none h-100" 
-            style="cursor: pointer;">
-            <div class="card h-100 shadow-sm">
-              <img src="@img" class="card-img-top" style="height:200px;object-fit:cover" />
-              <div class="card-body d-flex flex-column align-items-center text-center w-100">
-                <h5 class="card-title fw-bold">@name</h5>
-                <p class="card-text text-muted" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">@desc</p>
-                <div class="rating">
-                  @for (int star = 1; star <= 5; star++)
-                  {
-                    var isFilled = star <= rating;
-                    var starCss = isFilled ? "bi-star-fill" : "bi-star";
-                    var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
+            <a href="@r.Url()" class="d-block text-reset text-decoration-none h-100" style="cursor: pointer;">
+              <div class="card h-100 shadow-sm">
 
-                    <i class="bi @starCss" style="@colorStyle"></i>
-                  }
+                <img src="@img" class="card-img-top" style="height:200px;object-fit:cover" />
+
+                <div class="card-body d-flex flex-column align-items-center text-center w-100">
+                  <h5 class="card-title fw-bold">@name</h5>
+
+                  <p class="card-text text-muted"
+                    style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+                    @desc</p>
+
+                  <div class="rating">
+                    @for (int star = 1; star <= 5; star++)
+                    {
+                      var isFilled = star <= displayStars;
+                      var starCss = isFilled ? "bi-star-fill" : "bi-star";
+                      var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
+
+                      <i class="bi @starCss" style="@colorStyle"></i>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
             </a>
           </div>
         }
@@ -75,15 +90,11 @@
 </section>
 
 <script>
-  // when the DOM is ready
-  document.addEventListener("DOMContentLoaded", function() {
-  
-    // give the browser one tick to register the starting state
-    requestAnimationFrame(function() {
+  document.addEventListener("DOMContentLoaded", function () {
+    requestAnimationFrame(function () {
       document
         .querySelector(".category-hero .hero-content")
         .classList.add("visible");
     });
   });
 </script>
-
