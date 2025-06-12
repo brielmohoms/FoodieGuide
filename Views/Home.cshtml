@@ -28,30 +28,59 @@
     var weeklyFavorites = Model.Value<IEnumerable<IPublishedContent>>("weeklyFavorite") 
                         ?? Enumerable.Empty<IPublishedContent>();
 
-    // Find the Restaurants root node from the top level
     var restaurantsRoot = Umbraco.ContentAtRoot()
         .FirstOrDefault(x => x.ContentType.Alias == "restaurantListings"); 
 
-    var allRestaurants = restaurantsRoot != null
-        ? restaurantsRoot.Children()
-        : Enumerable.Empty<IPublishedContent>();
 
+    var allRestaurants = restaurantsRoot?
+        .DescendantsOfType("restaurantPage") ?? Enumerable.Empty<IPublishedContent>();
+
+    var restaurantsWithAvg = allRestaurants
+        .Select(r => {
+            // pull all review nodes beneath this restaurant
+            var reviews = r.ChildrenOfType("reviews");
+            // get all the numeric ratings, default empty to 0 so Average() doesn’t throw
+            var scores = reviews 
+                .Select(rv => rv.Value<int>("reviewRating"))
+                .DefaultIfEmpty(0);
+            // compute average
+            var avgRating = scores.Average();
+            return new {
+                Content = r,
+                AverageRating = avgRating
+            };
+    });
+ 
     // Filter by rating >= 4
-    var eligible = allRestaurants
-        .Where(r => (r.Value<int?>("rating") ?? 0) >= 4)
-        .ToList();
+    var eligible = restaurantsWithAvg
+        .Where(r => r.AverageRating >= 4);
 
     // Use week number to pick a new one each week
-    var weekNumber = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
-        DateTime.UtcNow,
+    var calendar = CultureInfo.CurrentCulture.Calendar;
+    // Using ISO-style weeks (Monday first, first 4-day week of the year)
+    var weekNumber = calendar.GetWeekOfYear(
+        DateTime.Now,
         CalendarWeekRule.FirstFourDayWeek,
         DayOfWeek.Monday
     );
 
     var random = new Random(weekNumber);
+
     var selected = eligible.Any()
-        ? eligible[random.Next(eligible.Count)]
+        ? eligible.ElementAt(random.Next(eligible.Count()))
         : null;
+
+    var restaurantOfTheWeek = selected?.Content;
+
+     var displayStars = restaurantOfTheWeek != null
+        ? (int)Math.Round(
+            restaurantOfTheWeek
+              .ChildrenOfType("reviews")
+              .Select(rv => rv.Value<int>("reviewRating"))
+              .DefaultIfEmpty(0)
+              .Average()
+          )
+        : 0;
 
     var occasionItems = Model.Value<IEnumerable<IPublishedContent>>("occasionCategory") 
                         ?? Enumerable.Empty<IPublishedContent>();
@@ -184,13 +213,13 @@
         <h2 class="text-center mb-4">Restaurant of the Week</h2>
         @if (selected != null)
         {
-            var imageUrl     = selected.Value<IPublishedContent>("image")?.Url();
-            var name         = selected.Value<string>("restaurantName") ?? selected.Name;
-            var description  = selected.Value<string>("description") ?? "";
-            var categoryArr  = selected.Value<string[]>("category") ?? Array.Empty<string>();
+            var imageUrl     = restaurantOfTheWeek.Value<IPublishedContent>("image")?.Url();
+            var name         = restaurantOfTheWeek.Value<string>("restaurantName");
+            var description  = restaurantOfTheWeek.Value<string>("description") ?? "";
+            var categoryArr  = restaurantOfTheWeek.Value<string[]>("category") ?? Array.Empty<string>();
             var categoryText = categoryArr.Length > 0 ? string.Join(", ", categoryArr) : "Uncategorized";
-            var ratingValue  = selected.Value<int?>("rating") ?? 0;
-            var restaurantUrl = selected.Url();
+
+            var restaurantUrl = restaurantOfTheWeek.Url();
 
             <a href="@restaurantUrl" class="text-decoration-none text-dark">
                 <div class="featured-card d-flex mb-4 shadow-sm rounded overflow-hidden">
@@ -213,10 +242,14 @@
 
                         <div class="rating">
                             @for (int star = 1; star <= 5; star++)
-                            {
-                                var starCss = star <= ratingValue ? "bi-star-fill" : "bi-star";
-                                <i class="bi @starCss" style="color: #3b5998;"></i>
-                            }
+                              {
+                                var isFilled = star <= displayStars;
+                                var starCss = isFilled ? "bi-star-fill" : "bi-star";
+                                var colorStyle = isFilled ? "color: #3b5998;" : "color: #ccc;";
+                                var sizeStyle = "font-size: 0.85rem;";
+
+                                <i class="bi @starCss" style="@($"{colorStyle} {sizeStyle}")"></i>
+                              }
                         </div>
                     </div>
                 </div>

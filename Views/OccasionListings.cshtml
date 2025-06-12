@@ -65,6 +65,7 @@
                                         var desc = restaurant.Value<string>("description");
                                         var img = restaurant.Value<IPublishedContent>("image")?.Url();
                                         var url = restaurant.Url();
+                                        
                                         var reviews = restaurant.ChildrenOfType("reviews");
                                         var scores = reviews.Select(b => b.Value<int>("reviewRating")).ToList();
                                         var avg = scores.Any()? scores.Average(): 0;
