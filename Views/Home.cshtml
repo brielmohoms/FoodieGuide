@@ -8,6 +8,7 @@
 @using Umbraco.Cms.Core.Models.PublishedContent
 @using Umbraco.Extensions
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@using System.Text.RegularExpressions
 
 @{
     // 1) Point to your master layout
@@ -253,7 +254,7 @@
                   <ul class="list-unstyled mt-2 mb-0 w-100 text-center">
                   @foreach (var ev in occasionEvents)
                   {
-                    var parts = ev.Split(new[] { '-' }, 2);
+                    var parts = Regex.Split(ev, @"\s*[-–—]\s*");
                     var title = parts[0].Trim();
                     var description = parts.Length > 1 ? parts[1].Trim() : "";
 
